@@ -3,7 +3,7 @@ import { StatusCard } from "@/components";
 export default function Dashboard() {
   return (
     <main className="h-[200vh] w-full p-4">
-      <div className="w-full grid grid-cols-4 gap-4">
+      <div className="w-full grid grid-cols-3 gap-4">
         <StatusCard type="balance" />
         <StatusCard type="income" />
         <StatusCard type="expense" />
