@@ -9,11 +9,13 @@ function App() {
       <AuthSideImg />
       <div className="w-full flex items-start justify-start flex-col">
         <Header />
-        <Routes>
-          {pages.map(({ Component, path }, i) => (
-            <Route key={i} path={path} element={<Component />} />
-          ))}
-        </Routes>
+        <div className="w-full min-h-[calc(100vh-4.75rem)] bg-bg rounded-bl-2xl overflow-x-hidden">
+          <Routes>
+            {pages.map(({ Component, path }, i) => (
+              <Route key={i} path={path} element={<Component />} />
+            ))}
+          </Routes>
+        </div>
       </div>
     </div>
   );

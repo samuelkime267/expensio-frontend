@@ -4,22 +4,25 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-
+.siauudfisujfs {
+  color: #ffffff0d;
+}
 @theme {
-  --color-pri: #3bc9db;
-  --color-sec: #4d96ff;
+  --color-pri: #1e483f;
+  --color-sec: #baf59d;
   --color-acc: #5eead4;
 
-  --color-bg: #010100;
+  --color-bg: #fdfafc;
   /* --color-surface: #111827; */
-  --color-sur: #0f0e13;
+  --color-sur: #ecf4e8;
 
-  --color-text-pri: #e5e7eb;
-  --color-text-sec: #9ca3af;
+  --color-text-pri: #222b29;
+  --color-text-sec: #696e6a;
   --color-text-mute: #6b7280;
 
-  --color-bor: #28282d;
+  --color-bor: #eeefef;
   --color-success: #00b041;
+  --color-err: #f63545;
 }
 .cosiosf {
   color: #28282d;
@@ -27,7 +30,8 @@
 }
 
 body {
-  background-color: var(--color-bg);
+  /* background-color: var(--color-bg); */
+  background-color: var(--color-sur);
   color: var(--color-text-pri);
   font-family: "Poppins", sans-serif;
 }
@@ -148,5 +152,9 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  a,
+  p {
+    @apply text-text-pri;
   }
 }

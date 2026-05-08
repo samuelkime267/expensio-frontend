@@ -8,3 +8,4 @@ export { default as AuthSideImg } from "./AuthSideImg";
 export { default as InlineLoader } from "./InlineLoader";
 export { default as ErrorText } from "./ErrorText";
 export { default as Notification } from "./Notification";
+export { default as StatusCard } from "./StatusCard";

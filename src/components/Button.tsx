@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-type ButtonType = "primary" | "secondary";
+type ButtonType = "primary" | "secondary" | "accent";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -13,6 +13,8 @@ const BtnType: Record<ButtonType, string> = {
     "w-full bg-pri text-bg font-medium py-2 px-4 rounded-sm hover:scale-[102%] duration-300 transition-colors transition-transform hover:cursor-pointer flex items-center justify-center gap-2 capitalize",
   secondary:
     "border border-pri flex items-center justify-center gap-2 w-full capitalize py-2 px-4 rounded-sm hover:scale-[102%] duration-300 transition-colors transition-transform",
+  accent:
+    "border border-bor flex items-center justify-center gap-2 capitalize py-2 px-4 rounded-full",
 };
 
 export default function Button({

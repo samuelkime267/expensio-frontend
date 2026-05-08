@@ -1,50 +1,35 @@
 import { Settings } from "lucide-react";
-import {
-  FaClock,
-  FaFire,
-  FaHistory,
-  FaHome,
-  FaStream,
-  FaVideo,
-} from "react-icons/fa";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { TfiLoop } from "react-icons/tfi";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 export const sidebarData = [
   {
-    name: "Home",
-    link: "/",
-    Icon: FaHome,
+    name: "Dashbaord",
+    link: "/dashboard",
+    Icon: LuLayoutDashboard,
   },
   {
-    name: "Trending",
-    link: "/trending",
-    Icon: FaFire,
+    name: "Income",
+    link: "/income",
+    Icon: GiReceiveMoney,
   },
   {
-    name: "Streams",
-    link: "/streams",
-    Icon: FaStream,
+    name: "Expense",
+    link: "/expenses",
+    Icon: GiPayMoney,
   },
   {
-    name: "Videos",
-    link: "/videos",
-    Icon: FaVideo,
-  },
-
-  {
-    name: "History",
-    link: "/history",
-    Icon: FaHistory,
-  },
-  {
-    name: "Watch Later",
-    link: "/watch-later",
-    Icon: FaClock,
+    name: "Subscriptions",
+    link: "/subscriptions",
+    Icon: TfiLoop,
   },
 ];
+
 export const subSidebarData = [
   {
-    name: "Settings",
-    link: "/settings",
+    name: "Account",
+    link: "/account",
     Icon: Settings,
   },
 ];

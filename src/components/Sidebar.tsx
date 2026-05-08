@@ -1,5 +1,4 @@
-import rivoIconImg from "@/assets/imgs/rivo-logo.png";
-import { sidebarData, subSidebarData } from "@/data/sidebar.data";
+import { sidebarData } from "@/data/sidebar.data";
 import { cn } from "@/lib/utils";
 import { NavLink, useLocation } from "react-router";
 import Button from "./Button";
@@ -7,6 +6,7 @@ import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "@/stores";
 import { AUTH_PREFIX } from "@/data/routes.data";
 import { useLogout } from "@/features/auth/utils";
+import { Logo } from "./icons";
 
 export default function Sidebar() {
   const { pathname } = useLocation();
@@ -17,70 +17,49 @@ export default function Sidebar() {
   if (isAuthRoute) return null;
 
   return (
-    <div className="bg-sur w-[13rem] min-w-[13rem] h-screen p-4 flex items-start justify-start flex-col gap-6 border-r border-r-bor sticky top-0 left-0 z-50">
-      <div className="w-full flex items-center justify-start">
-        <img src={rivoIconImg} alt="Rivo logo" className="w-14" />
-      </div>
+    <div className="w-[15rem] min-w-[15rem] h-screen flex items-start justify-start flex-col gap-6 sticky top-0 left-0 z-50">
+      <div className="bg-sur w-full min-w-full h-full p-4 flex items-start justify-start flex-col gap-8">
+        <div className="w-full flex items-center justify-start">
+          <Logo className="size-14 text-pri" />
+        </div>
 
-      <div className="w-full space-y-1">
-        {sidebarData.map(({ name, link, Icon }, i) => {
-          const isActive = pathname === link;
+        <div className="w-full space-y-1">
+          {sidebarData.map(({ name, link, Icon }, i) => {
+            const isActive = pathname === link;
 
-          return (
-            <NavLink
-              key={i}
-              to={link}
-              className={cn(
-                "w-full flex items-center justify-start gap-2 border border-transparent p-2.5 text-white rounded-lg text-sm group hover:border-pri hover:text-pri  transition-colors duration-300",
-                {
-                  "border-pri text-pri": isActive,
-                },
-              )}
+            return (
+              <NavLink
+                key={i}
+                to={link}
+                className={cn(
+                  "w-full flex items-center justify-start gap-2 p-2.5 px-4 text-text-pri rounded-full text-sm group hover:bg-sec transition-colors duration-300",
+                  {
+                    "bg-sec": isActive,
+                  },
+                )}
+              >
+                <Icon
+                  className={cn("size-5 text-text-pri", {
+                    "": isActive,
+                  })}
+                />
+                {name}
+              </NavLink>
+            );
+          })}
+        </div>
+
+        <div className="w-full space-y-1 mt-auto">
+          {isLoggedIn && (
+            <Button
+              onClick={logout}
+              className="flex items-center justify-start gap-2 text-red-600 p-2.5 w-full text-sm"
             >
-              <Icon
-                className={cn("size-4 text-white group-hover:text-pri", {
-                  "border-pri text-pri": isActive,
-                })}
-              />
-              {name}
-            </NavLink>
-          );
-        })}
-      </div>
-
-      <div className="w-full space-y-1 mt-auto">
-        {subSidebarData.map(({ name, link, Icon }, i) => {
-          const isActive = pathname === link;
-
-          return (
-            <NavLink
-              key={i}
-              to={link}
-              className={cn(
-                "w-full flex items-center justify-start gap-2 border border-transparent p-2.5 text-white rounded-lg text-sm group hover:border-pri hover:text-pri  transition-colors duration-300",
-                {
-                  "border-pri text-pri": isActive,
-                },
-              )}
-            >
-              <Icon
-                className={cn("size-4 text-white group-hover:text-pri", {
-                  "border-pri text-pri": isActive,
-                })}
-              />
-              {name}
-            </NavLink>
-          );
-        })}
-        {isLoggedIn && (
-          <Button
-            onClick={logout}
-            className="flex items-center justify-start gap-2 text-red-600 p-2.5 w-full text-sm"
-          >
-            <FiLogOut />
-            Logout
-          </Button>
-        )}
+              <FiLogOut />
+              Logout
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

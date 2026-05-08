@@ -36,16 +36,9 @@ export default function UserHeaderDropdown() {
       <DropdownMenuContent className="bg-bg" align="start">
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <NavLink to="/user">Profile</NavLink>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <NavLink to="/creator/dashboard">Dashboard</NavLink>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <NavLink to="/creator/stream">Stream</NavLink>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <NavLink to="/settings">Settings</NavLink>
+            <NavLink to="/account" className={"text-text-pri"}>
+              Profile
+            </NavLink>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuGroup>

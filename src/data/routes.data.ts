@@ -11,7 +11,6 @@ export const publicRoutes = ["/"];
 
 export const adminRoutePrefix = "/admin";
 
-export const DEFAULT_REDIRECT_ROUTE = "/creator/stream";
+export const DEFAULT_REDIRECT_ROUTE = "/dashboard";
 export const DEFAULT_AUTH_REDIRECT_ROUTE = "/auth/login";
 export const AUTH_PREFIX = "/auth";
-export const CREATOR_STREAM_ROUTE = "/creator/stream";
