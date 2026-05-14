@@ -17,7 +17,7 @@ export default function Sidebar() {
   if (isAuthRoute) return null;
 
   return (
-    <div className="w-[15rem] min-w-[15rem] h-screen flex items-start justify-start flex-col gap-6 sticky top-0 left-0 z-50">
+    <div className="w-[13rem] min-w-[13rem] h-screen flex items-start justify-start flex-col gap-6 sticky top-0 left-0 z-50">
       <div className="bg-sur w-full min-w-full h-full p-4 flex items-start justify-start flex-col gap-8">
         <div className="w-full flex items-center justify-start">
           <Logo className="size-14 text-pri" />

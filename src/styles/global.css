@@ -5,7 +5,7 @@
 
 @custom-variant dark (&:is(.dark *));
 .siauudfisujfs {
-  color: #ffffff0d;
+  color: #ebebeb;
 }
 @theme {
   --color-pri: #1e483f;
@@ -20,9 +20,11 @@
   --color-text-sec: #696e6a;
   --color-text-mute: #6b7280;
 
-  --color-bor: #eeefef;
+  --color-bor: #ebebeb;
   --color-success: #00b041;
+  --color-pending: #fbbf24;
   --color-err: #f63545;
+  --font-pop: "Poppins", sans-serif;
 }
 .cosiosf {
   color: #28282d;
@@ -148,7 +150,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 font-pop;
   }
   body {
     @apply bg-background text-foreground;
@@ -156,5 +158,14 @@ body {
   a,
   p {
     @apply text-text-pri;
+  }
+  h1 {
+    @apply text-text-pri text-2xl font-medium capitalize;
+  }
+  h2 {
+    @apply text-text-pri text-xl font-medium capitalize;
+  }
+  h3 {
+    @apply text-text-pri text-lg font-medium capitalize;
   }
 }

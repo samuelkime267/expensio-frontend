@@ -65,7 +65,7 @@ export default function StatusCard({ type }: StatusCardProps) {
           <p className="text-[9px]">+99.99%</p>
         </div>
         <div className="space-y-1">
-          <p className="text-2xl font-medium">₦100,000,000,000.00</p>
+          <p className="text-xl font-medium">₦100,000,000,000.00</p>
           <p className="capitalize text-xs text-text-mute">Total {type}</p>
         </div>
       </div>
