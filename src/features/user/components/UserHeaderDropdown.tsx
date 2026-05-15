@@ -27,7 +27,7 @@ export default function UserHeaderDropdown() {
         <Button className="flex items-center justify-center gap-2 ">
           <UserProfileImg name={name} profilePicture={profilePicture} />
 
-          <div>
+          <div className="max-md:hidden">
             <p className="text-sm font-medium text-nowrap text-left">{name}</p>
             <p className="text-[10px] text-text-sec text-left">{email}</p>
           </div>

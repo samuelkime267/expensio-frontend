@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -10,23 +9,76 @@ import {
 
 export default function TransactionTable() {
   return (
-    <div>
+    <div className="border border-bor rounded-lg overflow-hidden">
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+          <TableRow className="bg-[#ecf5ea] hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableHead className="text-text-pri">Name</TableHead>
+            <TableHead className="text-text-pri">Category</TableHead>
+            <TableHead className="text-text-pri">Amount</TableHead>
+            <TableHead className="text-text-pri">Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>Paid</TableCell>
-            <TableCell>Credit Card</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
+          </TableRow>
+          <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300">
+            <TableCell className="font-medium">Egusi Soup</TableCell>
+            <TableCell>Food</TableCell>
+            <TableCell>₦100,000</TableCell>
+            <TableCell>12-05-2026</TableCell>
           </TableRow>
         </TableBody>
       </Table>

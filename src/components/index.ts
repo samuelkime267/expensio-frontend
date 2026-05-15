@@ -11,3 +11,6 @@ export { default as Notification } from "./Notification";
 export { default as StatusCard } from "./StatusCard";
 export { default as TransactionTable } from "./TransactionTable";
 export { default as ProgressBar } from "./ProgressBar";
+export { default as BarChart } from "./BarChart";
+export { default as Cashflow } from "./Cashflow";
+export { default as Log } from "./Log";

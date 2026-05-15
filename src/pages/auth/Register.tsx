@@ -1,11 +1,11 @@
 import { RegistrationForm } from "@/features/auth/components";
 import { NavLink } from "react-router-dom";
-import rivoLogo from "@/assets/imgs/rivo-logo.png";
+import { Logo } from "@/components/icons";
 
 export default function Register() {
   return (
     <div className="w-full min-h-screen flex items-center justify-center gap-4 flex-col p-4">
-      <img src={rivoLogo} alt="Rivo logo" className="w-16" />
+      <Logo className="w-16 h-auto text-pri" />
       <div className="flex items-center justify-center flex-col">
         <p className="text-text-mute text-sm">Welcome</p>
         <h1 className="text-2xl font-medium">Register now!</h1>
