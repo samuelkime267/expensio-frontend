@@ -14,3 +14,4 @@ export { default as ProgressBar } from "./ProgressBar";
 export { default as BarChart } from "./BarChart";
 export { default as Cashflow } from "./Cashflow";
 export { default as Log } from "./Log";
+export { default as InputDropdown } from "./InputDropdown";

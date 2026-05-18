@@ -66,7 +66,7 @@ export default function TextArea({
 
       <div
         className={cn(
-          "w-full flex items-center justify-between border border-neutral-700 rounded-md",
+          "w-full flex items-center justify-between border border-neutral-300 rounded-md",
           {
             "border-destructive/60": error,
           },

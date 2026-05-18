@@ -80,7 +80,7 @@ export default function Input({
       <div
         className={cn(
           {
-            "w-full flex items-center justify-between border border-neutral-700 rounded-md":
+            "w-full flex items-center justify-between border border-neutral-300 rounded-md":
               type !== "checkbox" && type !== "radio",
             "border-destructive/60":
               error && type !== "checkbox" && type !== "radio",
