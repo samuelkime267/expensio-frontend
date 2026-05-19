@@ -115,7 +115,7 @@ export default function ForgotPasswordForm() {
         </Button>
       </form>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-sm ">
+        <DialogContent className="sm:max-w-sm bg-bg">
           <div className="w-full flex flex-col gap-4 items-center justify-center">
             <div className="bg-success/20 flex items-center justify-center p-4 w-fit rounded-full">
               <div className="bg-success flex items-center justify-center p-6 w-fit rounded-full">

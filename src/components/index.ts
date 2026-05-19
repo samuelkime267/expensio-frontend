@@ -15,3 +15,4 @@ export { default as BarChart } from "./BarChart";
 export { default as Cashflow } from "./Cashflow";
 export { default as Log } from "./Log";
 export { default as InputDropdown } from "./InputDropdown";
+export { default as LoaderSpinner } from "./LoaderSpinner";

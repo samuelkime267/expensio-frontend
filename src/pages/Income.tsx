@@ -3,7 +3,7 @@ import { Log } from "@/components";
 export default function Income() {
   return (
     <div className="p-4">
-      <div className="w-full max-w-[450px] border border-bor  rounded-xl p-4 flex flex-col gap-4">
+      <div className="w-full max-w-[450px] border border-bor  rounded-xl p-2 flex flex-col gap-4">
         <Log />
       </div>
       Income

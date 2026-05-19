@@ -103,7 +103,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         ) {
           try {
             const { data } = await api.post(AUTH_REFRESH_TOKEN);
-            setToken(data.accessToken);
+            setToken(data.data.accessToken);
 
             originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
             originalRequest._retry = true;
