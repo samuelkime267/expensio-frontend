@@ -4,7 +4,7 @@ import { TfiLoop } from "react-icons/tfi";
 import { NavLink } from "react-router-dom";
 import { MdOutlineSavings } from "react-icons/md";
 import { ActiveSubscription } from "@/features/subscription/components";
-import { LimitCard } from "@/features/expense/components";
+import { LimitCard } from "@/features/transaction/components";
 import { SavingsPlanCard } from "@/features/savings/components";
 import { useWindowSize } from "@/utils";
 
@@ -57,7 +57,7 @@ export default function Dashboard() {
             <div className="md:col-span-2 lg:col-span-3 border border-bor rounded-xl p-4 flex flex-col gap-6">
               <div className="flex items-center justify-between gap-4">
                 <h1 className="text-pri text-2xl font-medium capitalize">
-                  Recent Logs
+                  Recent Transactions
                 </h1>
 
                 <NavLink to="/transactions">
@@ -121,7 +121,7 @@ export default function Dashboard() {
           <div className="md:col-span-2 lg:col-span-3 border border-bor rounded-xl p-4 flex flex-col gap-6">
             <div className="flex items-center justify-between gap-4">
               <h1 className="text-pri text-2xl font-medium capitalize">
-                Recent Logs
+                Recent Transactions
               </h1>
 
               <NavLink to="/transactions">

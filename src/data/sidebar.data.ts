@@ -1,7 +1,8 @@
 import { Settings } from "lucide-react";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { TfiLoop } from "react-icons/tfi";
-import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
+import { GiReceiveMoney } from "react-icons/gi";
+import { MdOutlineSavings } from "react-icons/md";
 
 export const sidebarData = [
   {
@@ -10,14 +11,14 @@ export const sidebarData = [
     Icon: LuLayoutDashboard,
   },
   {
-    name: "Income",
-    link: "/income",
+    name: "Transactions",
+    link: "/transactions",
     Icon: GiReceiveMoney,
   },
   {
-    name: "Expense",
-    link: "/expenses",
-    Icon: GiPayMoney,
+    name: "Savings",
+    link: "/savings",
+    Icon: MdOutlineSavings,
   },
   {
     name: "Subscriptions",

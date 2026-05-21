@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { logIncome } from "../services";
+import { createTransaction } from "../services";
 import { AppError } from "@/utils";
 
 type UseLogIncomeProps =
@@ -11,7 +11,7 @@ type UseLogIncomeProps =
     }
   | undefined;
 
-export function useLogIncome({
+export function useCreateTransaction({
   setError,
   onSuccess,
   onError,
@@ -19,9 +19,9 @@ export function useLogIncome({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: logIncome,
+    mutationFn: createTransaction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
       if (onSuccess) onSuccess();
     },
     onError: (error) => {

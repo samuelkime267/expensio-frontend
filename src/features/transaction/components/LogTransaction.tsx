@@ -1,24 +1,27 @@
-import { useState } from "react";
-import Input from "./Input";
-import TextArea from "./TextArea";
-import Button from "./Button";
-import InputDropdown from "./InputDropdown";
-import {
-  createIncomeSchema,
-  type CreateIncomeSchemaType,
-} from "@/features/income/schema";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { useGetCategories } from "@/features/category/utils";
-import LoaderSpinner from "./LoaderSpinner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useLogIncome } from "@/features/income/utils";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
-import { useLogExpense } from "@/features/expense/utils";
-import type { CreateExpenseSchemaType } from "@/features/expense/schema";
+import {
+  Button,
+  Input,
+  InputDropdown,
+  LoaderSpinner,
+  TextArea,
+} from "@/components";
+import { useCreateTransaction } from "../utils/useCreateTransaction";
+import {
+  createTransactionSchema,
+  type CreateTransactionSchemaType,
+} from "../schemas";
 
-export default function Log() {
-  const [isIncome] = useState(false);
+type LogTransactionProps = {
+  type: "Income" | "Expense";
+};
+
+export default function LogTransaction({ type }: LogTransactionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
     formState: { errors },
@@ -27,55 +30,45 @@ export default function Log() {
     setValue,
     setError,
     reset,
-  } = useForm<CreateIncomeSchemaType>({
+  } = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(
-      createIncomeSchema,
-    ) as unknown as Resolver<CreateIncomeSchemaType>,
+      createTransactionSchema,
+    ) as unknown as Resolver<CreateTransactionSchemaType>,
   });
-  const { data, isLoading, isError } = useGetCategories(isIncome);
+  const { data, isLoading, isError } = useGetCategories(type === "Income");
   const categories = (data || []).map((item) => ({
     label: item.name,
     value: item.value,
   }));
 
-  const { mutate: mutateIncome, isPending: isIncomePending } = useLogIncome({
+  const { mutate, isPending } = useCreateTransaction({
     onSuccess: () => {
       setIsOpen(true);
       reset();
-    },
-  });
-  const { mutate: mutateExpense, isPending: isExpensePending } = useLogExpense({
-    onSuccess: () => {
-      setIsOpen(true);
-      reset();
+      setValue("type", type);
     },
   });
 
-  const overallLoading = isIncomePending || isExpensePending;
+  const overallLoading = isPending;
 
-  const submit = handleSubmit((bodyData: CreateIncomeSchemaType) => {
-    if (!isIncome) {
-      if (!bodyData.name || typeof bodyData.name !== "string") {
-        setError("name", { message: "Name is required" });
-        return;
-      }
-      console.log("bodyData", bodyData);
-      mutateExpense(bodyData as CreateExpenseSchemaType);
-      return;
-    }
-    mutateIncome(bodyData);
+  const submit = handleSubmit((bodyData: CreateTransactionSchemaType) => {
+    mutate(bodyData);
   });
+
+  useEffect(() => {
+    setValue("type", type);
+  }, [type, setValue]);
 
   return (
     <>
       <div className="relative p-2 space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="">Log {isIncome ? "Income" : "Expense"}</h2>
+          <h2 className="">Log {type}</h2>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
           <Input
-            required={!isIncome}
+            required
             name="name"
             label="name"
             register={register}
@@ -136,7 +129,7 @@ export default function Log() {
           <div className="w-full flex flex-col gap-4 items-center justify-center">
             <div className="bg-success/20 flex items-center justify-center p-4 w-fit rounded-full">
               <div className="bg-success flex items-center justify-center p-6 w-fit rounded-full">
-                {isIncome ? (
+                {type === "Income" ? (
                   <GiReceiveMoney className="text-white size-12" />
                 ) : (
                   <GiPayMoney className="text-white size-12" />
@@ -146,11 +139,11 @@ export default function Log() {
 
             <div className="flex flex-col items-center justify-center">
               <h2 className="text-2xl font-semibold text-center capitalize">
-                {isIncome ? "Income" : "Expense"} Logged Successfully
+                {type} Logged Successfully
               </h2>
               <p className="text-text-sec mt-2 text-center max-w-[17pc] text-sm">
-                Your {isIncome ? "income" : "expense"} has been logged you can
-                now close this window.
+                Your {type.toLocaleLowerCase()} has been logged you can now
+                close this window.
               </p>
             </div>
           </div>

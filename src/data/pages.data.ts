@@ -5,11 +5,11 @@ import ResetPassword from "@/pages/auth/ResetPassword";
 import VerifyEmail from "@/pages/auth/VerifyEmail";
 import Homepage from "@/pages/Homepage";
 import Notfound from "@/pages/Notfound";
-import Income from "@/pages/Income";
-import Expenses from "@/pages/Expenses";
 import Dashboard from "@/pages/Dashboard";
 import Subscriptions from "@/pages/Subscriptions";
 import Account from "@/pages/Account";
+import Transactions from "@/pages/Transactions";
+import Savings from "@/pages/Savings";
 
 export const pages = [
   {
@@ -41,12 +41,12 @@ export const pages = [
     Component: Dashboard,
   },
   {
-    path: "/income",
-    Component: Income,
+    path: "/transactions",
+    Component: Transactions,
   },
   {
-    path: "/expenses",
-    Component: Expenses,
+    path: "/savings",
+    Component: Savings,
   },
   {
     path: "/subscriptions",

@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const createIncomeSchema = z.object({
+const transactionType = z.enum(["Income", "Expense"]);
+
+export const createTransactionSchema = z.object({
   name: z.string("Name should be a string").optional(),
   amount: z.coerce
     .number("Amount is required")
@@ -12,6 +14,9 @@ export const createIncomeSchema = z.object({
   date: z.coerce.date("Date is required"),
   category: z.string("Category is required").min(3, "Category is required"),
   description: z.string().optional(),
+  type: transactionType,
 });
 
-export type CreateIncomeSchemaType = z.infer<typeof createIncomeSchema>;
+export type CreateTransactionSchemaType = z.infer<
+  typeof createTransactionSchema
+>;
