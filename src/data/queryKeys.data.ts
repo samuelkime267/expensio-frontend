@@ -1,4 +1,3 @@
-export const STREAM_DETAIL_KEY = ["stream-default-info"];
-export const STREAM_KEY = ["stream-key"];
+export const BALANCE_QUERY_KEY = ["balance"];
 
-export const LOGOUT_KEYS = [...STREAM_DETAIL_KEY, ...STREAM_KEY];
+export const LOGOUT_KEYS = [...BALANCE_QUERY_KEY];

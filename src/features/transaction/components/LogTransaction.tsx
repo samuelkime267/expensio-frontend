@@ -19,9 +19,13 @@ import {
 
 type LogTransactionProps = {
   type: "Income" | "Expense";
+  onSuccess?: () => void;
 };
 
-export default function LogTransaction({ type }: LogTransactionProps) {
+export default function LogTransaction({
+  type,
+  onSuccess,
+}: LogTransactionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
     formState: { errors },
@@ -44,6 +48,7 @@ export default function LogTransaction({ type }: LogTransactionProps) {
   const { mutate, isPending } = useCreateTransaction({
     onSuccess: () => {
       setIsOpen(true);
+      if (onSuccess) onSuccess();
       reset();
       setValue("type", type);
     },
@@ -71,6 +76,7 @@ export default function LogTransaction({ type }: LogTransactionProps) {
             required
             name="name"
             label="name"
+            placeholder="Enter name"
             register={register}
             error={errors.name?.message}
           />
@@ -78,6 +84,7 @@ export default function LogTransaction({ type }: LogTransactionProps) {
             required
             name="amount"
             label="amount"
+            placeholder="Enter amount"
             register={register}
             error={errors.amount?.message}
           />

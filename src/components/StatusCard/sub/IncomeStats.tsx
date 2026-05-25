@@ -50,15 +50,18 @@ export default function IncomeStats() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-bg" align="start">
             <DropdownMenuGroup>
-              {durations.map(({ label, value }, i) => (
-                <DropdownMenuItem
-                  asChild
-                  key={i}
-                  onClick={() => setDuration(value)}
-                >
-                  <p>{label}</p>
-                </DropdownMenuItem>
-              ))}
+              {durations.map(({ label, value }, i) => {
+                if (value === "year") return;
+                return (
+                  <DropdownMenuItem
+                    asChild
+                    key={i}
+                    onClick={() => setDuration(value)}
+                  >
+                    <p>{label}</p>
+                  </DropdownMenuItem>
+                );
+              })}
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,7 +1,13 @@
-import { CREATE_TRANSACTION, GET_TRANSACTION, GET_TOTAL } from "@/data/routes";
+import {
+  CREATE_TRANSACTION,
+  GET_TRANSACTION,
+  GET_TOTAL,
+  GET_CASHFLOW,
+} from "@/data/routes";
 import api from "@/lib/api";
 import { apiHandler } from "@/utils";
 import {
+  cashflowSchema,
   getTotalSchema,
   transactionSchema,
   transactionsSchema,
@@ -29,4 +35,9 @@ export const updateTransaction = async (
 ) =>
   apiHandler(transactionSchema, () =>
     api.put(`${GET_TRANSACTION}/${id}`, data),
+  );
+
+export const getCashflow = async (duration: duration) =>
+  apiHandler(cashflowSchema, () =>
+    api.get(`${GET_CASHFLOW}?duration=${duration}`),
   );

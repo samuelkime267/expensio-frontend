@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createTransaction } from "../services";
 import { AppError } from "@/utils";
+import { BALANCE_QUERY_KEY } from "@/data/queryKeys.data";
 
 type UseLogIncomeProps =
   | {
@@ -21,7 +22,15 @@ export function useCreateTransaction({
   return useMutation({
     mutationFn: createTransaction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({
+        queryKey: BALANCE_QUERY_KEY,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-total"],
+      });
       if (onSuccess) onSuccess();
     },
     onError: (error) => {

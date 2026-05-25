@@ -1,4 +1,3 @@
-import { weeklyLabels } from "@/data/labels.data";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,27 +18,20 @@ ChartJS.register(
   Legend,
 );
 
-const data = {
-  labels: weeklyLabels,
-  datasets: [
-    {
-      label: "Income",
-      data: [10, 20, 30, 40, 50, 60, 70].reverse(),
-      backgroundColor: "#baf49d",
-      borderRadius: 8, // rounded bars
-      borderSkipped: false,
-    },
-    {
-      label: "Expenses",
-      data: [60, 70, 10, 15, 100, 12, 50],
-      backgroundColor: "#1e483f",
-      borderRadius: 8,
-      // borderSkipped: false,
-    },
-  ],
+type BarChartProps = {
+  data: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string;
+      borderRadius: number;
+      borderSkipped?: boolean;
+    }[];
+  };
 };
 
-export default function BarChart() {
+export default function BarChart({ data }: BarChartProps) {
   return (
     <div className="w-full h-full aspect-[2/1] grid grid-cols-1 overflow-hidden">
       <Bar

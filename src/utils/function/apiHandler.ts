@@ -8,7 +8,6 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
   dataSchema: TDataSchema,
   request: () => Promise<AxiosResponse<unknown>>,
 ): Promise<z.infer<TDataSchema>> => {
-  // 🔥 Build full response schema here
   const responseSchema = z.discriminatedUnion("success", [
     createSuccessSchema(dataSchema),
     ApiErrorSchema,
@@ -16,7 +15,6 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
 
   try {
     const response = await request();
-
     const result = responseSchema.safeParse(response.data);
 
     if (!result.success) {

@@ -3,7 +3,7 @@ import { z } from "zod";
 const transactionType = z.enum(["Income", "Expense"]);
 
 export const createTransactionSchema = z.object({
-  name: z.string("Name should be a string").optional(),
+  name: z.string("Name should be a string").min(2, "Name is required"),
   amount: z.coerce
     .number("Amount is required")
     .min(
@@ -11,7 +11,9 @@ export const createTransactionSchema = z.object({
       "Value is required and must be greater than zero",
     )
     .nonnegative("Value must be greater than zero"),
-  date: z.coerce.date("Date is required"),
+  date: z.coerce.date("Date is required").refine((date) => date <= new Date(), {
+    message: "Date cannot be in the future",
+  }),
   category: z.string("Category is required").min(3, "Category is required"),
   description: z.string().optional(),
   type: transactionType,
