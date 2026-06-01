@@ -4,9 +4,11 @@ import { ActiveSubscription } from "@/features/subscription/components";
 import { LimitCard, TransactionTable } from "@/features/transaction/components";
 import { SavingsPlanCard } from "@/features/savings/components";
 import { useWindowSize } from "@/utils";
+import { useGetTransactions } from "@/features/transaction/utils";
 
 export default function Dashboard() {
   const { width } = useWindowSize();
+  const { data } = useGetTransactions();
 
   if (width === 0) return;
 
@@ -43,7 +45,7 @@ export default function Dashboard() {
                 </NavLink>
               </div>
 
-              <TransactionTable />
+              <TransactionTable data={data} />
             </div>
           </div>
         </div>
@@ -81,7 +83,7 @@ export default function Dashboard() {
               </NavLink>
             </div>
 
-            <TransactionTable />
+            <TransactionTable data={data} />
           </div>
         </div>
       </div>

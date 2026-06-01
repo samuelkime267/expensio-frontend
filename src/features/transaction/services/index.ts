@@ -12,6 +12,7 @@ import {
   transactionSchema,
   transactionsSchema,
   type CreateTransactionSchemaType,
+  type TransactionType,
 } from "../schemas";
 import type { duration } from "@/data/durations.data";
 
@@ -23,8 +24,22 @@ export const getTotal = async (duration: duration) =>
     api.get(`${GET_TOTAL}?duration=${duration}`),
   );
 
-export const getTransactions = async () =>
-  apiHandler(transactionsSchema, () => api.get(GET_TRANSACTION));
+export type TransactionQueries =
+  | {
+      page?: number;
+      count?: number;
+      type?: TransactionType;
+      startDate?: number;
+      endDate?: number;
+    }
+  | undefined;
+
+export const getTransactions = async (queries: TransactionQueries) =>
+  apiHandler(transactionsSchema, () =>
+    api.get(
+      `${GET_TRANSACTION}${queries ? `?${new URLSearchParams(queries as Record<string, string>)}` : ""}`,
+    ),
+  );
 
 export const getTransaction = async (id: string) =>
   apiHandler(transactionSchema, () => api.get(`${GET_TRANSACTION}/${id}`));

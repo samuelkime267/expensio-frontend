@@ -6,13 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetTransactions } from "@/features/transaction/utils";
 import { formatCurrency, formatDateTime } from "@/utils";
+import type { TransactionsSchemaType } from "../schemas";
 
-export default function TransactionTable() {
-  const { data } = useGetTransactions();
-  const transactions = data || [];
+type TransactionTableProps = {
+  data: TransactionsSchemaType | undefined;
+};
 
+export default function TransactionTable({ data }: TransactionTableProps) {
   return (
     <div className="border border-bor rounded-lg overflow-hidden">
       <Table>
@@ -26,7 +27,7 @@ export default function TransactionTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map(({ name, category, amount, date, type }, i) => (
+          {data?.map(({ name, category, amount, date, type }, i) => (
             <TableRow
               key={i}
               className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor"
