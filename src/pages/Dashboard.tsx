@@ -8,7 +8,9 @@ import { useGetTransactions } from "@/features/transaction/utils";
 
 export default function Dashboard() {
   const { width } = useWindowSize();
-  const { data } = useGetTransactions();
+  const { data } = useGetTransactions({
+    count: 10,
+  });
 
   if (width === 0) return;
 

@@ -1,8 +1,5 @@
 import { Button } from "@/components";
-import {
-  LogTransaction,
-  TransactionTable,
-} from "@/features/transaction/components";
+import { TransactionTable } from "@/features/transaction/components";
 import { useGetTransactions } from "@/features/transaction/utils";
 import { cn } from "@/lib/utils";
 import { FilterIcon } from "lucide-react";
@@ -49,6 +46,7 @@ export default function Transactions() {
         <li>table of income</li>
       </ul> */}
       {/* <TransactionTable /> */}
+
       <div className="col-span-1 border border-bor rounded-xl p-4 flex flex-col gap-6">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-pri text-2xl font-medium capitalize">
@@ -79,7 +77,6 @@ export default function Transactions() {
             <Button
               btnType="accent"
               className="flex items-center justify-center gap-2 text-xs "
-              onClick={expenseClick}
             >
               <FilterIcon className="size-3" />
               Filter

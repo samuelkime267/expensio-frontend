@@ -7,10 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency, formatDateTime } from "@/utils";
-import type { TransactionsSchemaType } from "../schemas";
+import type { TransactionPaginationSchemaType } from "../schemas";
 
 type TransactionTableProps = {
-  data: TransactionsSchemaType | undefined;
+  data: TransactionPaginationSchemaType | undefined;
 };
 
 export default function TransactionTable({ data }: TransactionTableProps) {
@@ -27,18 +27,20 @@ export default function TransactionTable({ data }: TransactionTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map(({ name, category, amount, date, type }, i) => (
-            <TableRow
-              key={i}
-              className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor"
-            >
-              <TableCell className="font-medium">{name}</TableCell>
-              <TableCell>{category}</TableCell>
-              <TableCell>₦{formatCurrency(amount)}</TableCell>
-              <TableCell>{type}</TableCell>
-              <TableCell>{formatDateTime(date).date}</TableCell>
-            </TableRow>
-          ))}
+          {data?.transactions.map(
+            ({ name, category, amount, date, type }, i) => (
+              <TableRow
+                key={i}
+                className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor"
+              >
+                <TableCell className="font-medium">{name}</TableCell>
+                <TableCell>{category}</TableCell>
+                <TableCell>₦{formatCurrency(amount)}</TableCell>
+                <TableCell>{type}</TableCell>
+                <TableCell>{formatDateTime(date).date}</TableCell>
+              </TableRow>
+            ),
+          )}
         </TableBody>
       </Table>
     </div>

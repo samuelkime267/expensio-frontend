@@ -2,8 +2,10 @@ import { Route, Routes } from "react-router-dom";
 import { pages } from "@/data/pages.data";
 import { AuthSideImg, Header, Sidebar } from "@/components";
 import { useState } from "react";
+import { useScrollToTopOnPathChange } from "@/utils";
 
 function App() {
+  useScrollToTopOnPathChange();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <div className="flex items-start justify-start relative w-full">

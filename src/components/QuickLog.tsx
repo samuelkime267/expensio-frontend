@@ -4,9 +4,10 @@ import { MdOutlineSavings } from "react-icons/md";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { LogTransaction } from "@/features/transaction/components";
-import { Button } from "@/components";
+import { Button, OutcomeModal } from "@/components";
 
 export default function QuickLog() {
+  const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(true);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [isIncome, setIsIncome] = useState(true);
   const openLogIncome = () => {
@@ -56,9 +57,24 @@ export default function QuickLog() {
         onOpenChange={setIsTransactionModalOpen}
       >
         <DialogContent className="sm:max-w-xl bg-bg max-h-[calc(100dvh-4rem)] overflow-y-auto p-2">
-          <LogTransaction type={isIncome ? "Income" : "Expense"} />
+          <LogTransaction
+            type={isIncome ? "Income" : "Expense"}
+            onSuccess={() => {
+              setIsTransactionModalOpen(false);
+              setIsOutcomeModalOpen(true);
+            }}
+          />
         </DialogContent>
       </Dialog>
+
+      <OutcomeModal
+        isOpen={isOutcomeModalOpen}
+        setIsOpen={setIsOutcomeModalOpen}
+        title={`${isIncome ? "Income" : "Expense"} Logged Successfully`}
+        Icon={isIncome ? GiReceiveMoney : GiPayMoney}
+        description={`Your ${isIncome ? "income" : "expense"} has been logged you can now
+                close this now.`}
+      />
     </>
   );
 }

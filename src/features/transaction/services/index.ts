@@ -10,11 +10,11 @@ import {
   cashflowSchema,
   getTotalSchema,
   transactionSchema,
-  transactionsSchema,
   type CreateTransactionSchemaType,
   type TransactionType,
 } from "../schemas";
 import type { duration } from "@/data/durations.data";
+import { transactionPaginationSchema } from "../schemas/transactionPagination.schema";
 
 export const createTransaction = async (data: CreateTransactionSchemaType) =>
   apiHandler(transactionSchema, () => api.post(CREATE_TRANSACTION, data));
@@ -35,7 +35,7 @@ export type TransactionQueries =
   | undefined;
 
 export const getTransactions = async (queries: TransactionQueries) =>
-  apiHandler(transactionsSchema, () =>
+  apiHandler(transactionPaginationSchema, () =>
     api.get(
       `${GET_TRANSACTION}${queries ? `?${new URLSearchParams(queries as Record<string, string>)}` : ""}`,
     ),

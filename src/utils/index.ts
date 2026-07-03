@@ -5,3 +5,4 @@ export * from "./hooks/useWindowSize";
 export * from "./function/apiHandler";
 export * from "./function/formatCurrency";
 export * from "./function/formatDateTime";
+export * from "./hooks/useScrollToTopOnPathChange";
