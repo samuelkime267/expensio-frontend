@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BACKEND_URL } from "@/config/env";
-import { DEFAULT_REDIRECT_ROUTE } from "@/data/routes.data";
+// import { DEFAULT_REDIRECT_ROUTE } from "@/data/routes.data";
 import { AUTH_REFRESH_TOKEN, GOOGLE_AUTH } from "@/data/routes";
 import { useAuth } from "@/stores";
 import api from "@/lib/api";
