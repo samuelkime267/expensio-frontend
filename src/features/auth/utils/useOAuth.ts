@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BACKEND_URL } from "@/config/env";
+import { BACKEND_URL, BASE_URL } from "@/config/env";
 // import { DEFAULT_REDIRECT_ROUTE } from "@/data/routes.data";
 import { AUTH_REFRESH_TOKEN, GOOGLE_AUTH } from "@/data/routes";
 import { useAuth } from "@/stores";
@@ -11,6 +11,8 @@ export default function useOAuth(
   const { setToken } = useAuth((s) => s);
   const loginWithGoogle = async () => {
     setError(undefined);
+    console.log(`${BASE_URL}`);
+    console.log(`${GOOGLE_AUTH}`);
     window.open(GOOGLE_AUTH, "_blank", "width=500,height=600");
   };
 
