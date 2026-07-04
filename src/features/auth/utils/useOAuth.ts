@@ -13,8 +13,6 @@ export default function useOAuth(
 
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
-      console.log(event);
-      console.log(BACKEND_URL);
       if (event.origin !== BACKEND_URL) return;
       if (event.data.from === "oauth") {
         if (event.data.success) {
