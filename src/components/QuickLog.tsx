@@ -1,13 +1,11 @@
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
-import { TfiLoop } from "react-icons/tfi";
-import { MdOutlineSavings } from "react-icons/md";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { LogTransaction } from "@/features/transaction/components";
 import { Button, OutcomeModal } from "@/components";
 
 export default function QuickLog() {
-  const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(true);
+  const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [isIncome, setIsIncome] = useState(true);
   const openLogIncome = () => {
@@ -26,7 +24,7 @@ export default function QuickLog() {
           <h2 className="">Quick Log</h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-2 gap-4 mt-auto">
           <Button
             onClick={openLogIncome}
             className="bg-[#ecf4e8] aspect-square rounded-md flex items-center justify-center flex-col gap-1"
@@ -41,14 +39,14 @@ export default function QuickLog() {
             <GiPayMoney className="size-4" />
             <p className="text-[9px]">Expense</p>
           </Button>
-          <Button className="bg-[#ecf4e8] aspect-square rounded-md flex items-center justify-center flex-col gap-1">
+          {/* <Button className="bg-[#ecf4e8] aspect-square rounded-md flex items-center justify-center flex-col gap-1">
             <TfiLoop className="size-4" />
             <p className="text-[9px]">Recurring</p>
           </Button>
           <Button className="bg-[#ecf4e8] aspect-square rounded-md flex items-center justify-center flex-col gap-1">
             <MdOutlineSavings className="size-4" />
             <p className="text-[9px]">Savings</p>
-          </Button>
+          </Button> */}
         </div>
       </div>
 

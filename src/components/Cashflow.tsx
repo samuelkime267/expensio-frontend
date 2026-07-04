@@ -38,7 +38,7 @@ export default function Cashflow() {
   };
 
   return (
-    <div className="md:col-span-2 lg:col-span-3 border border-bor rounded-xl p-4 flex flex-col gap-6">
+    <div className="md:col-span-2 lg:col-span-4 border border-bor rounded-xl p-4 flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-pri text-2xl font-medium capitalize">Cashflow</h1>
 

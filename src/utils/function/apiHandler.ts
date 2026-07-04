@@ -18,12 +18,14 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
     const result = responseSchema.safeParse(response.data);
 
     if (!result.success) {
+      console.error(result.error);
       throw new AppError("Invalid server response", "validation");
     }
 
     const parsed = result.data;
 
     if (!parsed.success) {
+      console.error(parsed.message);
       throw new AppError(parsed.message, "api");
     }
 
@@ -39,6 +41,7 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
       const parsedError = ApiErrorSchema.safeParse(error.response?.data);
 
       if (parsedError.success) {
+        console.error(parsedError.data);
         throw new AppError(
           parsedError.data.message,
           "api",
@@ -46,6 +49,7 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
         );
       }
 
+      console.error(error);
       throw new AppError(
         "Network request failed",
         "network",
@@ -57,6 +61,7 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
       throw error;
     }
 
+    console.error(error);
     throw new AppError("Something went wrong", "unknown");
   }
 };

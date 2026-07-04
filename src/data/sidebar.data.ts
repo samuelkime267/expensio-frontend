@@ -9,21 +9,25 @@ export const sidebarData = [
     name: "Dashbaord",
     link: "/dashboard",
     Icon: LuLayoutDashboard,
+    isLocked: false,
   },
   {
     name: "Transactions",
     link: "/transactions",
     Icon: GiReceiveMoney,
+    isLocked: false,
   },
   {
     name: "Savings",
     link: "/savings",
     Icon: MdOutlineSavings,
+    isLocked: true,
   },
   {
     name: "Subscriptions",
     link: "/subscriptions",
     Icon: TfiLoop,
+    isLocked: true,
   },
 ];
 

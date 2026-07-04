@@ -7,7 +7,7 @@ import { useAuth } from "@/stores";
 import { AUTH_PREFIX } from "@/data/routes.data";
 import { useLogout } from "@/features/auth/utils";
 import { Logo } from "./icons";
-import { Plus } from "lucide-react";
+import { Lock, Plus } from "lucide-react";
 
 type SidebarProps = {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,28 +60,34 @@ export default function Sidebar({
           </div>
 
           <div className="w-full space-y-1">
-            {sidebarData.map(({ name, link, Icon }, i) => {
+            {sidebarData.map(({ name, link, Icon, isLocked }, i) => {
               const isActive = pathname === link;
-
+              const Element = !isLocked ? NavLink : "div";
               return (
-                <NavLink
+                <Element
                   key={i}
                   to={link}
                   onClick={closeSidebar}
                   className={cn(
-                    "w-full flex items-center justify-start gap-2 p-2.5 px-4 text-text-pri rounded-full text-sm group hover:bg-sec transition-colors duration-300",
+                    "w-full flex items-center justify-between gap-2 p-2.5 px-4 text-text-pri rounded-full text-sm group hover:bg-sec transition-colors duration-300",
                     {
                       "bg-sec": isActive,
+                      "cursor-not-allowed": isLocked,
                     },
                   )}
                 >
-                  <Icon
-                    className={cn("size-5 text-text-pri", {
-                      "": isActive,
-                    })}
-                  />
-                  {name}
-                </NavLink>
+                  <div className="flex items-center justify-start gap-2">
+                    <Icon
+                      className={cn("size-5 text-text-pri", {
+                        "": isActive,
+                      })}
+                    />
+                    {name}
+                  </div>
+                  {isLocked && (
+                    <Lock className="text-pri-text size-3 min-w-3 min-h-3" />
+                  )}
+                </Element>
               );
             })}
           </div>

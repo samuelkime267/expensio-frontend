@@ -6,12 +6,16 @@ import { FilterIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function Transactions() {
+  const [curPage, setCurPage] = useState(1);
   const [isIncome, setIsIncome] = useState<boolean | null>(null);
   const { data } = useGetTransactions({
+    page: curPage,
     ...(isIncome !== null && { type: isIncome ? "Income" : "Expense" }),
   });
+  const { pagination } = data || {};
 
   const incomeClick = () => {
+    setCurPage(1);
     setIsIncome((val) => {
       if (val === true) return null;
       if (val === false) return true;
@@ -20,6 +24,7 @@ export default function Transactions() {
     });
   };
   const expenseClick = () => {
+    setCurPage(1);
     setIsIncome((val) => {
       if (val === false) return null;
       if (val === true) return false;
@@ -30,25 +35,8 @@ export default function Transactions() {
 
   return (
     <div className="p-4 grid grid-cols-1 gap-4">
-      {/* <div className="w-full max-w-[450px] border border-bor  rounded-xl p-2 flex flex-col gap-4">
-        <LogTransaction type="Income" />
-      </div>
-      <div className="w-full max-w-[450px] border border-bor  rounded-xl p-2 flex flex-col gap-4">
-        <LogTransaction type="Expense" />
-      </div>
-      Income
-      <h1>plan</h1>
-      <ul>
-        <li>Balance left</li>
-        <li>total income this week</li>
-        <li>quick log form for income</li>
-        <li>chart showing income</li>
-        <li>table of income</li>
-      </ul> */}
-      {/* <TransactionTable /> */}
-
       <div className="col-span-1 border border-bor rounded-xl p-4 flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start justify-start lg:items-center lg:justify-between gap-4 flex-col lg:flex-row">
           <h1 className="text-pri text-2xl font-medium capitalize">
             All Transactions
           </h1>
@@ -85,6 +73,28 @@ export default function Transactions() {
         </div>
 
         <TransactionTable data={data} />
+
+        <div className="flex max-lg:flex-col gap-4 lg:items-center lg:justify-between p-4">
+          <p>
+            Page {pagination?.currentPage} of {pagination?.maxPage}
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <Button
+              btnType="secondary"
+              disabled={!pagination?.prevPage}
+              onClick={() => setCurPage((s) => s - 1)}
+            >
+              Previous
+            </Button>
+            <Button
+              disabled={!pagination?.nextPage}
+              btnType="primary"
+              onClick={() => setCurPage((s) => s + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
