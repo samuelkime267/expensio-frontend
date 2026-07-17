@@ -4,6 +4,8 @@ export function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
     width: 0,
     height: 0,
+    visualHeight: 0,
+    visualWidth: 0,
   });
 
   useEffect(() => {
@@ -11,6 +13,8 @@ export function useWindowSize() {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
+        visualHeight: window.visualViewport?.height || 0,
+        visualWidth: window.visualViewport?.width || 0,
       });
     };
 

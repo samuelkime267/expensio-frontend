@@ -6,3 +6,4 @@ export * from "./function/apiHandler";
 export * from "./function/formatCurrency";
 export * from "./function/formatDateTime";
 export * from "./hooks/useScrollToTopOnPathChange";
+export * from "./function/getCurrentLocalDateTime";

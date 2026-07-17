@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { type UseFormRegister } from "react-hook-form";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -15,47 +15,62 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   valueAsNumber?: boolean;
 }
 
-export default function Input({
-  label,
-  className,
-  disabled,
-  maxLength,
-  onChange,
-  readOnly,
-  type,
-  inputClassName,
-  labelClassName,
-  containerClassName,
-  children,
-  register,
-  valueAsNumber,
-  name,
-  required,
-  error,
-  ...props
-}: InputProps) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    label,
+    className,
+    disabled,
+    maxLength,
+    onChange,
+    readOnly,
+    type,
+    inputClassName,
+    labelClassName,
+    containerClassName,
+    children,
+    register,
+    valueAsNumber,
+    name,
+    required,
+    error,
+    onFocus,
+    ...props
+  },
+  ref,
+) {
   const [lettersCount, setLettersCount] = useState(0);
 
-  const registration =
-    (register &&
-      register((name as string) || (label as string), {
-        valueAsNumber,
-        required,
-        onChange: (e) => {
-          if (maxLength) {
-            const length = e.target.value.length;
-            if (length >= maxLength) {
-              e.target.value = e.target.value.slice(0, maxLength);
-              setLettersCount(maxLength);
-            } else {
-              setLettersCount(length);
-            }
-          }
+  let registration: any = {};
 
-          if (onChange) onChange(e);
-        },
-      })) ||
-    {};
+  if (register) {
+    registration = register((name as string) || (label as string), {
+      valueAsNumber,
+      required,
+      onChange: (e) => {
+        if (maxLength) {
+          const length = e.target.value.length;
+          if (length >= maxLength) {
+            e.target.value = e.target.value.slice(0, maxLength);
+            setLettersCount(maxLength);
+          } else {
+            setLettersCount(length);
+          }
+        }
+
+        if (onChange) onChange(e);
+      },
+    });
+  }
+  const { ref: registerRef, ...registrationProps } = registration;
+
+  const handleFocus = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    e.target.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
 
   return (
     <div
@@ -97,7 +112,21 @@ export default function Input({
           readOnly={readOnly}
           type={type}
           name={name}
-          {...registration}
+          onFocus={(e) => {
+            handleFocus(e);
+            if (onFocus) onFocus(e);
+          }}
+          onChange={onChange}
+          {...registrationProps}
+          ref={(el) => {
+            registerRef?.(el);
+
+            if (typeof ref === "function") {
+              ref(el);
+            } else if (ref) {
+              ref.current = el;
+            }
+          }}
           {...props}
         />
 
@@ -110,4 +139,8 @@ export default function Input({
       {error && <p className="text-destructive text-xs">{error}</p>}
     </div>
   );
-}
+});
+
+Input.displayName = "Input";
+
+export default Input;

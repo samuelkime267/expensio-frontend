@@ -1,46 +1,100 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type Resolver } from "react-hook-form";
 import { useGetCategories } from "@/features/category/utils";
-import {
-  Button,
-  Input,
-  InputDropdown,
-  LoaderSpinner,
-  TextArea,
-} from "@/components";
+import { Button, Input, LoaderSpinner, TextArea } from "@/components";
 import { useCreateTransaction } from "../utils/useCreateTransaction";
 import {
   createTransactionSchema,
   type CreateTransactionSchemaType,
 } from "../schemas";
+import { cn } from "@/lib/utils";
+import { formatDateTime, getCurrentLocalDateTime } from "@/utils";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type LogTransactionProps = {
   type: "Income" | "Expense";
   onSuccess?: () => void;
+  className?: string;
 };
 
 export default function LogTransaction({
   type,
   onSuccess,
+  className,
 }: LogTransactionProps) {
   const {
     formState: { errors },
     handleSubmit,
     register,
     setValue,
-    setError,
     reset,
+    watch,
   } = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(
       createTransactionSchema,
     ) as unknown as Resolver<CreateTransactionSchemaType>,
   });
+  const { date, category } = watch();
+  const finalDate = new Date(date);
+
+  const [isCustomDate, setIsCustomDate] = useState<boolean>();
+  const [amount, setAmount] = useState("");
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isBreakDownModalOpen, setIsBreakDownModalOpen] = useState(false);
   const { data, isLoading, isError } = useGetCategories(type === "Income");
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    value = value.replace("₦", "");
+
+    // Allow only numbers and decimal
+    value = value.replace(/[^\d.]/g, "");
+
+    // Prevent multiple decimals
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    const amount = (Number(value) || 0).toFixed(2);
+    const finalAmount = Number(amount);
+    const [whole, decimal] = value.split(".");
+
+    const limitedDecimal = decimal?.slice(0, 2);
+
+    const formattedWhole = whole ? Number(whole).toLocaleString("en-NG") : "";
+
+    setAmount(
+      limitedDecimal !== undefined
+        ? `₦${formattedWhole}.${limitedDecimal}`
+        : `₦${formattedWhole}`,
+    );
+    setValue("amount", finalAmount);
+  };
+
+  useEffect(() => {
+    if (!date || (date as unknown) === "") {
+      setIsCustomDate(undefined);
+      return;
+    }
+
+    if (typeof date === "string") {
+      setIsCustomDate(true);
+      return;
+    }
+    if (typeof date === "object") {
+      setIsCustomDate(false);
+    }
+  }, [date]);
+
   const categories = (data || []).map((item) => ({
     label: item.name,
     value: item.value,
   }));
+  const activeCategory = categories.find(({ value }) => value === category);
+  const inputDateRef = useRef<HTMLInputElement>(null);
 
   const { mutate, isPending } = useCreateTransaction({
     onSuccess: () => {
@@ -61,55 +115,149 @@ export default function LogTransaction({
   }, [type, setValue]);
 
   return (
-    <div className="relative p-2 space-y-4">
-      <div className="flex items-center justify-between gap-4">
+    <div
+      className={cn(
+        "w-full relative p-2 gap-8 h-full flex flex-col items-start justify-start",
+        className,
+      )}
+    >
+      <div className="w-full flex items-center justify-between gap-4">
         <h2 className="">Log {type}</h2>
       </div>
 
-      <form onSubmit={submit} className="space-y-4">
-        <Input
-          required
-          name="name"
-          label="name"
-          placeholder="Enter name"
-          register={register}
-          error={errors.name?.message}
-        />
-        <Input
-          required
-          name="amount"
-          label="amount"
-          placeholder="Enter amount"
-          register={register}
-          error={errors.amount?.message}
-        />
-        <InputDropdown
-          required
-          items={categories}
-          label="Category"
-          name="category"
-          error={errors.category?.message}
-          setValue={setValue}
-          setError={setError}
-        />
-        <Input
-          required
-          name="date"
-          label="date"
-          type="date"
-          register={register}
-          error={errors.date?.message}
-        />
+      <form
+        onSubmit={submit}
+        className="space-y-4 w-full h-full flex flex-col items-start justify-between gap-4"
+      >
+        <div className="w-full space-y-8">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <Input
+                required
+                name="name"
+                placeholder="Enter name"
+                register={register}
+                error={errors.name?.message}
+                className="border-y-0 border-x-0 rounded-none px-0"
+                inputClassName="text-base py-1 px-0"
+              />
+              <div className="flex flex-col items-end justify-end gap-1">
+                <Button
+                  btnType="accent"
+                  className={cn("text-xs text-nowrap", {
+                    "border-success text-success": activeCategory,
+                  })}
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(true)}
+                >
+                  {activeCategory ? activeCategory.label : "Select Category"}
+                </Button>
+                {errors.category?.message && (
+                  <p className="text-destructive text-xs">
+                    {errors.category?.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
-        <TextArea
-          name="description"
-          label="description"
-          register={register}
-          error={errors.description?.message}
-        />
-        <Button btnType="primary" disabled={overallLoading}>
-          {overallLoading ? <LoaderSpinner className="size-6" /> : "Submit"}
-        </Button>
+            <Input
+              required
+              name="amount"
+              type="text"
+              inputMode="numeric"
+              placeholder="Enter Amount"
+              value={amount}
+              onChange={handleAmountChange}
+              error={errors.amount?.message}
+              className="border-0"
+              inputClassName="text-center text-3xl p-0 font-medium"
+              containerClassName="border-y border-dashed border-black/20 py-4"
+            />
+            <Button
+              btnType="accent"
+              className={cn("text-xs text-nowrap hidden!")}
+              type="button"
+              onClick={() => setIsBreakDownModalOpen(true)}
+            >
+              Use Breakdown
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm">
+                  Date & Time <span className="text-red-500">*</span>
+                </p>
+                <p className="text-sm">
+                  {isCustomDate !== undefined
+                    ? `${formatDateTime(finalDate).date} at ${formatDateTime(finalDate).time}`
+                    : "Pick Date"}
+                </p>
+              </div>
+              <div className="flex items-center justify-between gap-4 relative">
+                <Button
+                  btnType="accent"
+                  className={cn("text-xs", {
+                    "border-success text-success": isCustomDate === false,
+                  })}
+                  type="button"
+                  onClick={() => {
+                    if (inputDateRef.current) {
+                      const { date, localDateTime } = getCurrentLocalDateTime();
+                      inputDateRef.current.value = localDateTime;
+                      setValue("date", date);
+                    }
+                  }}
+                >
+                  Now
+                </Button>
+                <div>
+                  <Button
+                    btnType="accent"
+                    className={cn("text-xs", {
+                      "border-success text-success": isCustomDate === true,
+                    })}
+                    type="button"
+                    onClick={() => {
+                      if (inputDateRef.current)
+                        inputDateRef.current.showPicker();
+                    }}
+                  >
+                    Custom
+                  </Button>
+                  <Input
+                    ref={inputDateRef}
+                    required
+                    name="date"
+                    type="datetime-local"
+                    register={register}
+                    error={errors.date?.message}
+                    inputClassName="absolute top-1/2 left-0 w-0 h-0 overflow-hidden"
+                    containerClassName="absolute top-1/2 left-0 w-0 h-0 overflow-hidden"
+                  />
+                </div>
+              </div>
+              {errors.date?.message && (
+                <p className="text-destructive text-xs">
+                  {errors.date?.message}
+                </p>
+              )}
+            </div>
+
+            <TextArea
+              name="description"
+              label="description"
+              register={register}
+              error={errors.description?.message}
+            />
+          </div>
+        </div>
+        <div className="w-full">
+          <Button btnType="primary" disabled={overallLoading}>
+            {overallLoading ? <LoaderSpinner className="size-6" /> : "Submit"}
+          </Button>
+        </div>
       </form>
 
       {isLoading && (
@@ -124,6 +272,66 @@ export default function LogTransaction({
           <p>Reload the page</p>
         </div>
       )}
+
+      <Dialog open={isCategoryModalOpen} onOpenChange={setIsCategoryModalOpen}>
+        <DialogContent className="sm:max-w-xl bg-bg overflow-y-auto p-2 max-h-[calc(100dvh-6rem)]">
+          <div
+            className={cn(
+              "w-full relative p-2 gap-6 h-full flex flex-col items-start justify-start",
+              className,
+            )}
+          >
+            <div className="w-full flex items-center justify-between gap-4">
+              <h2 className="">Select Category</h2>
+            </div>
+
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {categories.map(({ label, value }, i) => (
+                <Button
+                  key={i}
+                  className={cn(
+                    "border border-bor p-2 text-center text-xs w-full aspect-square rounded-md",
+                    {
+                      "border-pri text-pri": category === value,
+                    },
+                  )}
+                  onClick={() => {
+                    setValue("category", value);
+                    setIsCategoryModalOpen(false);
+                  }}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isBreakDownModalOpen}
+        onOpenChange={setIsBreakDownModalOpen}
+      >
+        <DialogContent className="sm:max-w-xl bg-bg overflow-y-auto p-2 max-h-[calc(100dvh-6rem)]">
+          <div
+            className={cn(
+              "w-full relative p-2 gap-6 h-full flex flex-col items-start justify-start",
+              className,
+            )}
+          >
+            <div className="w-full flex items-center justify-between gap-4">
+              <h2 className="">Price Breakdown</h2>
+            </div>
+
+            <div>
+              <div>
+                <Input type="name" placeholder="Item Name" />
+                <Input type="number" placeholder="Amount" />
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

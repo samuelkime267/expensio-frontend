@@ -11,7 +11,11 @@ export const transactionSchema = z.object({
   updatedAt: z.coerce.date(),
   user: ObjectIdSchema,
   amount: z.number(),
-  category: z.string(),
+  category: z.object({
+    id: ObjectIdSchema,
+    name: z.string(),
+    value: z.string(),
+  }),
   description: z.string().optional(),
 });
 

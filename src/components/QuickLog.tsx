@@ -54,7 +54,7 @@ export default function QuickLog() {
         open={isTransactionModalOpen}
         onOpenChange={setIsTransactionModalOpen}
       >
-        <DialogContent className="sm:max-w-xl bg-bg max-h-[calc(100dvh-4rem)] overflow-y-auto p-2">
+        <DialogContent className="sm:max-w-2xl bg-bg h-[calc(100dvh-4rem)] overflow-y-auto p-2">
           <LogTransaction
             type={isIncome ? "Income" : "Expense"}
             onSuccess={() => {

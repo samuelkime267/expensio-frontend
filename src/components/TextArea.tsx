@@ -24,6 +24,7 @@ export default function TextArea({
   required,
   error,
   labelClassName,
+  onFocus,
   ...props
 }: InputProps) {
   const [lettersCount, setLettersCount] = useState(0);
@@ -47,6 +48,15 @@ export default function TextArea({
         },
       })) ||
     {};
+
+  const handleFocus = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    e.target.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
 
   return (
     <div
@@ -74,6 +84,10 @@ export default function TextArea({
         )}
       >
         <textarea
+          onFocus={(e) => {
+            handleFocus(e);
+            if (onFocus) onFocus(e);
+          }}
           className="w-full text-xs outline-none p-2.5 resize-none"
           disabled={disabled}
           rows={6}

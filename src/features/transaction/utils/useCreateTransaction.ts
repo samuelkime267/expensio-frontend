@@ -31,6 +31,9 @@ export function useCreateTransaction({
       queryClient.invalidateQueries({
         queryKey: ["get-total"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["get-cashflow"],
+      });
       if (onSuccess) onSuccess();
     },
     onError: (error) => {
