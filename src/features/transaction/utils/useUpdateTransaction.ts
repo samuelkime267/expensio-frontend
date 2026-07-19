@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTransaction } from "../services";
+import { updateTransaction } from "../services";
 import { handleError } from "@/utils";
 import { BALANCE_QUERY_KEY } from "@/data/queryKeys.data";
+import type { CreateTransactionSchemaType } from "../schemas";
 
-type UseLogIncomeProps =
+type UseUpdateTransactionProps =
   | {
       setError?: React.Dispatch<React.SetStateAction<string>>;
       onSuccess?: () => void;
@@ -11,16 +12,24 @@ type UseLogIncomeProps =
     }
   | undefined;
 
-export function useCreateTransaction({
+type UpdateTransactionProps = {
+  transaction: CreateTransactionSchemaType;
+  id: string;
+};
+
+export function useUpdateTransaction({
   setError,
   onSuccess,
   onError,
-}: UseLogIncomeProps = {}) {
+}: UseUpdateTransactionProps = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createTransaction,
-    onSuccess: () => {
+    mutationFn: async ({ id, transaction }: UpdateTransactionProps) => {
+      if (!id || !transaction) return;
+      return await updateTransaction(id, transaction);
+    },
+    onSuccess: (returnedData) => {
       queryClient.invalidateQueries({
         queryKey: BALANCE_QUERY_KEY,
       });
@@ -33,6 +42,10 @@ export function useCreateTransaction({
       queryClient.invalidateQueries({
         queryKey: ["get-cashflow"],
       });
+      if (returnedData)
+        queryClient.invalidateQueries({
+          queryKey: ["transaction", returnedData._id],
+        });
       if (onSuccess) onSuccess();
     },
     onError: (error) => handleError(error, setError, onError),

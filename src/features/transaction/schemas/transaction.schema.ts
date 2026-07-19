@@ -4,6 +4,7 @@ import { z } from "zod";
 export const transactionTypeSchema = z.enum(["Income", "Expense"]);
 
 export const transactionSchema = z.object({
+  _id: ObjectIdSchema,
   type: transactionTypeSchema,
   name: z.string(),
   date: z.coerce.date(),

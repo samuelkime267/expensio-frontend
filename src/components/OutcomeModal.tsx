@@ -11,6 +11,7 @@ type OutcomeModalProps = {
   title: string;
   description: string;
   status?: "success" | "failure" | "pending";
+  children?: React.ReactNode;
 };
 
 export default function OutcomeModal({
@@ -20,48 +21,48 @@ export default function OutcomeModal({
   title,
   Icon,
   status = "success",
+  children,
 }: OutcomeModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-sm bg-bg z-100">
         <div className="w-full flex flex-col gap-4 items-center justify-center">
-          <>
+          <div
+            className={cn(
+              "bg-success/20 flex items-center justify-center p-4 w-fit rounded-full",
+              {
+                "bg-err/20": status === "failure",
+                "bg-pending/20": status === "pending",
+              },
+            )}
+          >
             <div
               className={cn(
-                "bg-success/20 flex items-center justify-center p-4 w-fit rounded-full",
+                "bg-success flex items-center justify-center p-6 w-fit rounded-full",
                 {
-                  "bg-err/20": status === "failure",
-                  "bg-pending/20": status === "pending",
+                  "bg-err": status === "failure",
+                  "bg-pending": status === "pending",
                 },
               )}
             >
-              <div
-                className={cn(
-                  "bg-success flex items-center justify-center p-6 w-fit rounded-full",
-                  {
-                    "bg-err": status === "failure",
-                    "bg-pending": status === "pending",
-                  },
-                )}
-              >
-                {Icon ? (
-                  <Icon className="text-white size-12" />
-                ) : (
-                  <>
-                    {status === "success" && (
-                      <CheckIcon className="text-white size-12" />
-                    )}
-                    {status === "failure" && (
-                      <MdError className="text-white size-12" />
-                    )}
-                    {status === "pending" && (
-                      <MdWarning className="text-white size-12" />
-                    )}
-                  </>
-                )}
-              </div>
+              {Icon ? (
+                <Icon className="text-white size-12" />
+              ) : (
+                <>
+                  {status === "success" && (
+                    <CheckIcon className="text-white size-12" />
+                  )}
+                  {status === "failure" && (
+                    <MdError className="text-white size-12" />
+                  )}
+                  {status === "pending" && (
+                    <MdWarning className="text-white size-12" />
+                  )}
+                </>
+              )}
             </div>
-          </>
+          </div>
+
           <div className="flex flex-col items-center justify-center">
             <h2 className="text-2xl font-semibold text-center capitalize">
               {title}
@@ -70,6 +71,8 @@ export default function OutcomeModal({
               {description}
             </p>
           </div>
+
+          {children}
         </div>
       </DialogContent>
     </Dialog>

@@ -4,10 +4,29 @@ import { AppError } from "../class/AppError";
 import { ApiErrorSchema } from "@/schemas/error.schema";
 import { createSuccessSchema } from "@/utils";
 
-export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
+// Overloads
+export function apiHandler<TDataSchema extends z.ZodTypeAny>(
   dataSchema: TDataSchema,
   request: () => Promise<AxiosResponse<unknown>>,
-): Promise<z.infer<TDataSchema>> => {
+): Promise<z.infer<TDataSchema>>;
+
+export function apiHandler(
+  request: () => Promise<AxiosResponse<unknown>>,
+): Promise<void>;
+
+// Implementation
+export async function apiHandler<TDataSchema extends z.ZodTypeAny>(
+  schemaOrRequest: TDataSchema | (() => Promise<AxiosResponse<unknown>>),
+  maybeRequest?: () => Promise<AxiosResponse<unknown>>,
+): Promise<z.infer<TDataSchema> | void> {
+  const hasSchema = typeof schemaOrRequest !== "function";
+
+  const dataSchema = hasSchema ? schemaOrRequest : z.undefined();
+
+  const request = hasSchema
+    ? maybeRequest!
+    : (schemaOrRequest as () => Promise<AxiosResponse<unknown>>);
+
   const responseSchema = z.discriminatedUnion("success", [
     createSuccessSchema(dataSchema),
     ApiErrorSchema,
@@ -15,6 +34,7 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
 
   try {
     const response = await request();
+
     const result = responseSchema.safeParse(response.data);
 
     if (!result.success) {
@@ -29,19 +49,18 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
       throw new AppError(parsed.message, "api");
     }
 
-    type SuccessResponse<T> = {
-      success: true;
-      message: string;
-      data: T;
-    };
+    if (!hasSchema) {
+      return;
+    }
 
-    return (parsed as SuccessResponse<z.infer<TDataSchema>>).data;
+    return parsed.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       const parsedError = ApiErrorSchema.safeParse(error.response?.data);
 
       if (parsedError.success) {
         console.error(parsedError.data);
+
         throw new AppError(
           parsedError.data.message,
           "api",
@@ -50,6 +69,7 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
       }
 
       console.error(error);
+
       throw new AppError(
         "Network request failed",
         "network",
@@ -64,4 +84,72 @@ export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
     console.error(error);
     throw new AppError("Something went wrong", "unknown");
   }
-};
+}
+
+// import { AxiosError, type AxiosResponse } from "axios";
+// import { z } from "zod";
+// import { AppError } from "../class/AppError";
+// import { ApiErrorSchema } from "@/schemas/error.schema";
+// import { createSuccessSchema } from "@/utils";
+
+// export const apiHandler = async <TDataSchema extends z.ZodTypeAny>(
+//   dataSchema: TDataSchema,
+//   request: () => Promise<AxiosResponse<unknown>>,
+// ): Promise<z.infer<TDataSchema>> => {
+//   const responseSchema = z.discriminatedUnion("success", [
+//     createSuccessSchema(dataSchema),
+//     ApiErrorSchema,
+//   ]);
+
+//   try {
+//     const response = await request();
+//     const result = responseSchema.safeParse(response.data);
+
+//     if (!result.success) {
+//       console.error(result.error);
+//       throw new AppError("Invalid server response", "validation");
+//     }
+
+//     const parsed = result.data;
+
+//     if (!parsed.success) {
+//       console.error(parsed.message);
+//       throw new AppError(parsed.message, "api");
+//     }
+
+//     type SuccessResponse<T> = {
+//       success: true;
+//       message: string;
+//       data: T;
+//     };
+
+//     return (parsed as SuccessResponse<z.infer<TDataSchema>>).data;
+//   } catch (error: unknown) {
+//     if (error instanceof AxiosError) {
+//       const parsedError = ApiErrorSchema.safeParse(error.response?.data);
+
+//       if (parsedError.success) {
+//         console.error(parsedError.data);
+//         throw new AppError(
+//           parsedError.data.message,
+//           "api",
+//           error.response?.status,
+//         );
+//       }
+
+//       console.error(error);
+//       throw new AppError(
+//         "Network request failed",
+//         "network",
+//         error.response?.status,
+//       );
+//     }
+
+//     if (error instanceof AppError) {
+//       throw error;
+//     }
+
+//     console.error(error);
+//     throw new AppError("Something went wrong", "unknown");
+//   }
+// };

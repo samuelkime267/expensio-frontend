@@ -7,3 +7,5 @@ export * from "./function/formatCurrency";
 export * from "./function/formatDateTime";
 export * from "./hooks/useScrollToTopOnPathChange";
 export * from "./function/getCurrentLocalDateTime";
+export * from "./function/handleError";
+export * from "./function/formatAmount";

@@ -1,118 +1,45 @@
-import { useEffect, useRef, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type Resolver } from "react-hook-form";
-import { useGetCategories } from "@/features/category/utils";
 import { Button, Input, LoaderSpinner, TextArea } from "@/components";
-import { useCreateTransaction } from "../utils/useCreateTransaction";
-import {
-  createTransactionSchema,
-  type CreateTransactionSchemaType,
-} from "../schemas";
+import { type TransactionSchemaType } from "../schemas";
 import { cn } from "@/lib/utils";
 import { formatDateTime, getCurrentLocalDateTime } from "@/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import useLogTransaction from "../utils/useLogTransaction";
 
 type LogTransactionProps = {
   type: "Income" | "Expense";
   onSuccess?: () => void;
   className?: string;
+  transaction?: TransactionSchemaType;
 };
 
 export default function LogTransaction({
   type,
   onSuccess,
   className,
+  transaction,
 }: LogTransactionProps) {
   const {
-    formState: { errors },
-    handleSubmit,
+    submit,
+    overallLoading,
+    activeCategory,
+    handleAmountChange,
+    finalDate,
+    errors,
     register,
+    inputDateRef,
+    category,
+    isCustomDate,
+    isCategoryModalOpen,
+    setIsCategoryModalOpen,
+    isBreakDownModalOpen,
+    setIsBreakDownModalOpen,
+    isLoading,
+    isError,
+    amount,
+    categories,
     setValue,
-    reset,
-    watch,
-  } = useForm<CreateTransactionSchemaType>({
-    resolver: zodResolver(
-      createTransactionSchema,
-    ) as unknown as Resolver<CreateTransactionSchemaType>,
-  });
-  const { date, category } = watch();
-  const finalDate = new Date(date);
-
-  const [isCustomDate, setIsCustomDate] = useState<boolean>();
-  const [amount, setAmount] = useState("");
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [isBreakDownModalOpen, setIsBreakDownModalOpen] = useState(false);
-  const { data, isLoading, isError } = useGetCategories(type === "Income");
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-
-    value = value.replace("₦", "");
-
-    // Allow only numbers and decimal
-    value = value.replace(/[^\d.]/g, "");
-
-    // Prevent multiple decimals
-    const parts = value.split(".");
-    if (parts.length > 2) {
-      value = parts[0] + "." + parts.slice(1).join("");
-    }
-
-    const amount = (Number(value) || 0).toFixed(2);
-    const finalAmount = Number(amount);
-    const [whole, decimal] = value.split(".");
-
-    const limitedDecimal = decimal?.slice(0, 2);
-
-    const formattedWhole = whole ? Number(whole).toLocaleString("en-NG") : "";
-
-    setAmount(
-      limitedDecimal !== undefined
-        ? `₦${formattedWhole}.${limitedDecimal}`
-        : `₦${formattedWhole}`,
-    );
-    setValue("amount", finalAmount);
-  };
-
-  useEffect(() => {
-    if (!date || (date as unknown) === "") {
-      setIsCustomDate(undefined);
-      return;
-    }
-
-    if (typeof date === "string") {
-      setIsCustomDate(true);
-      return;
-    }
-    if (typeof date === "object") {
-      setIsCustomDate(false);
-    }
-  }, [date]);
-
-  const categories = (data || []).map((item) => ({
-    label: item.name,
-    value: item.value,
-  }));
-  const activeCategory = categories.find(({ value }) => value === category);
-  const inputDateRef = useRef<HTMLInputElement>(null);
-
-  const { mutate, isPending } = useCreateTransaction({
-    onSuccess: () => {
-      if (onSuccess) onSuccess();
-      reset();
-      setValue("type", type);
-    },
-  });
-
-  const overallLoading = isPending;
-
-  const submit = handleSubmit((bodyData: CreateTransactionSchemaType) => {
-    mutate(bodyData);
-  });
-
-  useEffect(() => {
-    setValue("type", type);
-  }, [type, setValue]);
+    setBtnClicked,
+  } = useLogTransaction({ type, onSuccess, transaction });
 
   return (
     <div
@@ -122,7 +49,9 @@ export default function LogTransaction({
       )}
     >
       <div className="w-full flex items-center justify-between gap-4">
-        <h2 className="">Log {type}</h2>
+        <h2 className="">
+          {transaction ? "Edit" : "Log"} {type}
+        </h2>
       </div>
 
       <form
@@ -190,7 +119,7 @@ export default function LogTransaction({
                   Date & Time <span className="text-red-500">*</span>
                 </p>
                 <p className="text-sm">
-                  {isCustomDate !== undefined
+                  {!isNaN(finalDate.getTime())
                     ? `${formatDateTime(finalDate).date} at ${formatDateTime(finalDate).time}`
                     : "Pick Date"}
                 </p>
@@ -204,6 +133,7 @@ export default function LogTransaction({
                   type="button"
                   onClick={() => {
                     if (inputDateRef.current) {
+                      setBtnClicked(true);
                       const { date, localDateTime } = getCurrentLocalDateTime();
                       inputDateRef.current.value = localDateTime;
                       setValue("date", date);
@@ -220,8 +150,10 @@ export default function LogTransaction({
                     })}
                     type="button"
                     onClick={() => {
-                      if (inputDateRef.current)
+                      if (inputDateRef.current) {
+                        setBtnClicked(true);
                         inputDateRef.current.showPicker();
+                      }
                     }}
                   >
                     Custom
