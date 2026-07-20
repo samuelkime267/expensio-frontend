@@ -45,7 +45,7 @@ export const getTransaction = async (id: string) =>
   apiHandler(transactionSchema, () => api.get(`${GET_TRANSACTION}/${id}`));
 
 export const deleteTransaction = async (id: string) =>
-  apiHandler(() => api.delete(`${GET_TRANSACTION}/${id}`));
+  apiHandler(transactionSchema, () => api.delete(`${GET_TRANSACTION}/${id}`));
 
 export const updateTransaction = async (
   id: string,

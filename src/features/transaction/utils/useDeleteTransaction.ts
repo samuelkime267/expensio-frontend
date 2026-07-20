@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTransaction } from "../services";
 import { handleError } from "@/utils";
 import { BALANCE_QUERY_KEY } from "@/data/queryKeys.data";
-import type { CreateTransactionSchemaType } from "../schemas";
 
 type UseUpdateTransactionProps =
   | {
@@ -34,10 +33,10 @@ export function useDeleteTransaction({
       queryClient.invalidateQueries({
         queryKey: ["get-cashflow"],
       });
-      // if (returnedData)
-      //   queryClient.invalidateQueries({
-      //     queryKey: ["transaction", returnedData._id],
-      //   });
+      if (returnedData)
+        queryClient.invalidateQueries({
+          queryKey: ["transaction", returnedData._id],
+        });
       if (onSuccess) onSuccess();
     },
     onError: (error) => handleError(error, setError, onError),
