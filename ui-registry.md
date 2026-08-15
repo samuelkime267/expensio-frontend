@@ -210,3 +210,191 @@ Last updated: 2026-08-15
 
 **Pattern notes:** Rendered below the detail card only when `breakdowns.length > 0`. Total reuses the signed amount styling from the card headline, matching the transaction amount.
 
+### Analytics stat card
+
+File: `frontend/src/features/analytics/components/AnalyticsStatCard.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Card             | `border border-bor rounded-xl p-4 flex flex-col gap-8` |
+| Icon chip        | `p-2.5 rounded-md bg-sec/30 w-fit`      |
+| Value            | `text-xl font-medium` + optional tone `text-success` / `text-err` |
+| Label            | `capitalize text-xs text-text-mute`     |
+
+**Pattern notes:** Same skeleton shape and inner structure as `StatusCard` (gap-8 + icon chip + `space-y-1` value/label) but WITHOUT the per-card duration dropdown — the period selector lives once on the page header. Use for analytics page metrics; pass the tone via `valueClassName`.
+
+### Analytics section card
+
+File: `frontend/src/pages/Analytics.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Card             | `border border-bor rounded-xl p-4 flex flex-col gap-4` (gap-6 when chart + legend) |
+| Section heading  | `h2` `text-lg font-medium text-text-pri capitalize` |
+| Subtitle         | `text-xs text-text-mute`                |
+| Legend row       | `flex items-center justify-between gap-4`; dot `size-3 rounded-full`, name `text-sm text-text-pri capitalize`, amount `text-sm text-text-sec` |
+| Trend pill       | matches StatusCard: `bg-sec/80 rounded-full gap-1 p-2.5 py-0.75`, `bg-destructive/80` when negative, `bg-neutral-200` when 0; arrow `FaArrowTrendUp/Down size-2.5`, text `text-[9px]` |
+| Habit row        | `flex items-start justify-start gap-3`; icon chip `p-2.5 rounded-md bg-sec/30 shrink-0`; title `text-sm font-medium text-text-pri capitalize`; detail `text-xs text-text-mute` |
+| Summed rows      | item row `text-sm` (name `text-text-pri capitalize`, amount `text-text-sec` / `text-success` for income), total row `border-t border-bor pt-3` + `font-semibold` tone |
+
+**Pattern notes:** Details-page cards, all `rounded-xl` per baseline. Layout: stat row `grid grid-cols-2 md:grid-cols-4 gap-4`, then `grid grid-cols-1 md:grid-cols-2 gap-4` with chart cards `md:col-span-2`. "Where Did Your Money Go" repeats the `TransactionSummary` breakdown-card row pattern (border-t total). Donut palette (green family, matches Cashflow): `#1e483f`, `#baf49d`, `#4a7c6f`, `#d8eedd`, `#7fb8a0`, `#e6f4ea`.
+
+### DonutChart
+
+File: `frontend/src/components/DonutChart.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                     |
+| ---------------- | ----------------------------------------- |
+| Container        | `w-full h-full aspect-square max-w-56 mx-auto overflow-hidden` |
+| Legend           | disabled (external legend renders beside chart) |
+| Cutout           | `62%`                                     |
+
+**Pattern notes:** chart.js `Doughnut` wrapper mirroring `BarChart` (`responsive`, `maintainAspectRatio: false`, legend hidden). Registers `ArcElement`, `Tooltip`, `Legend`. Accepts per-segment `backgroundColor: string[]`. Use a square aspect for donuts, `aspect-[2/1]` for bars.
+
+## Budget feature — Established 2026-08-15
+
+### Budget page
+
+File: `frontend/src/pages/Budget.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Page container   | `p-4 grid grid-cols-1 gap-4` (matches Transactions) |
+| Header row       | `flex items-start justify-start lg:items-center lg:justify-between gap-4 flex-col lg:flex-row` |
+| Month selector   | `DropdownMenu` trigger = `Button btnType="accent" text-xs` + `ChevronDown`; content `bg-bg max-h-80 overflow-y-auto align="end"` |
+| Month arrows     | `Button btnType="accent" p-2` wrapping `ChevronLeft` / `ChevronRight` `size-4` |
+| Filter chips     | `w-fit rounded-full p-2.5 py-0.75 text-[11px]`; active `bg-pri text-bg`, inactive `bg-sec/30 text-text-pri hover:bg-sec/60` |
+
+**Pattern notes:** Filter mapping: on-track = `UNDER_BUDGET`/`ON_TRACK`, watch = `NEAR_LIMIT`, over = `OVER_BUDGET`. Month is 1-based (`new Date(year, month - 1, 1)`), arrows wrap year boundaries. The page passes `existingBudget={budget}` to `BudgetSetupDialog` — the dialog derives create vs edit from its presence.
+
+### Budget row / group
+
+File: `frontend/src/features/budget/components/BudgetRow.tsx` + `BudgetGroup.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Group card       | `border border-bor rounded-xl overflow-hidden` |
+| Group header     | `p-4 flex items-center justify-between gap-4`, icon chip `p-2.5 rounded-md bg-sec/30` + `size-4` icon |
+| Row (button)     | `w-full flex items-center gap-3 p-4 text-left hover:bg-[#ecf5ea]/50 transition-color duration-300 cursor-pointer` |
+| Row icon chip    | `p-2.5 rounded-md bg-sec/30 shrink-0`   |
+| Row name         | `text-sm font-medium text-text-pri capitalize truncate` |
+| Row meta         | `text-xs text-text-mute truncate`       |
+| Row amount       | `₦{formatCurrency(spent)} / ₦{formatCurrency(amount)}` |
+| Row progress     | `ProgressBar` `w-24` + status badge column (`w-24`, `items-end gap-2`) |
+| Chevron          | `ChevronRight size-4 text-text-mute shrink-0` |
+| Divider          | `divide-y divide-bor` between rows     |
+
+**Pattern notes:** Type drives icon + bucket: `FIXED`→`Home` (Essentials), `FLEXIBLE`→`Sparkles` (Lifestyle), `GOAL`→`Target` (Goals). Groups render nothing when empty. Whole row is a button opening the detail dialog.
+
+### Budget overview / health / safe-to-spend
+
+File: `frontend/src/features/budget/components/BudgetOverview.tsx` + `BudgetHealth.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Card             | `border border-bor rounded-xl p-4 flex flex-col gap-4` |
+| Section heading  | `h2` `text-lg font-medium text-text-pri capitalize` |
+| Subtitle         | `text-xs text-text-mute`                |
+| Amount headline  | `text-xl font-medium text-text-pri`     |
+| Stat grid        | `grid grid-cols-3 gap-4 border-t border-bor pt-4`; value `text-sm font-medium text-text-pri`, label `capitalize text-xs text-text-mute` |
+| Health counts    | `text-xl font-medium` + `text-success` / `text-pending` / `text-err` (On track / Watch / Over) |
+
+**Pattern notes:** Overview always renders a `ProgressBar` (`overview.percentageUsed`). Safe-to-spend card is the same card shape with an icon chip row + `weeklySafe`/mo hint. Health counts all items (not filter-applied).
+
+### Budget status badge + pace pill
+
+File: `frontend/src/features/budget/components/BudgetStatusBadge.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Pill             | `w-fit rounded-full flex items-center justify-start gap-1 p-2.5 py-0.75` |
+| Under / on track | `bg-success/20 text-success` / `bg-sec/80 text-text-pri` |
+| Near limit / over | `bg-pending/20 text-pending` / `bg-err/20 text-err` |
+| No budget        | `bg-neutral-200`                        |
+| Text             | `text-[9px]`                            |
+
+**Pattern notes:** Pace pill reuses `bg-sec/80` + `text-[9px]` with labels ahead/behind/on-track ("Ahead of schedule", "Behind schedule", "On schedule"). Matches the Analytics trend-pill pattern.
+
+### Budget setup wizard dialog
+
+File: `frontend/src/features/budget/components/BudgetSetupDialog.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Dialog content   | `sm:max-w-lg bg-bg`                     |
+| Step indicator   | `flex items-center justify-between gap-2`, each `flex-1 text-center text-[11px] capitalize p-2 rounded-md bg-sec/30`; active `bg-pri text-bg`, past `bg-sec/60` |
+| Item row         | `flex items-center justify-between gap-3 border border-bor rounded-md p-2`; name `text-sm text-text-pri capitalize truncate`, type `text-[10px] text-text-mute uppercase` |
+| Amount input     | `w-32` `border border-neutral-300 rounded-md` + `text-right text-xs p-2.5` |
+| Review stats     | `grid grid-cols-3 gap-4 border border-bor rounded-md p-3`, leftover tone `text-success` / `text-err` |
+| Scrolling list   | `flex flex-col gap-2 max-h-* overflow-y-auto pr-1` |
+| Footer buttons   | `flex items-center justify-center gap-4`, `Button btnType="primary|secondary" w-full` |
+
+**Pattern notes:** 3 steps (Income → Categories → Review), seeds on open via a `seeded` flag so it only builds state once data arrives; create mode waits for suggestions + goals (loader while pending), edit mode seeds from `existingBudget`. GOAL rows are read-only. Zero-amount rows are filtered on submit. On success: closes dialog, opens success `OutcomeModal`.
+
+### Goal card
+
+File: `frontend/src/features/budget/components/GoalCard.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Card             | `border border-bor rounded-xl p-4 flex flex-col gap-4` |
+| Icon chip        | `p-2.5 rounded-md bg-sec/30 shrink-0` + `Target size-4` |
+| Name             | `text-sm font-medium text-text-pri capitalize truncate` |
+| Meta             | `text-xs text-text-mute capitalize` (target date) |
+| Actions          | `DropdownMenuContent bg-bg align="end"`, Edit `hover:bg-black/10!`, Delete `hover:bg-err/10!` + `text-err` (same as transaction rows) |
+| Stat rows        | `flex items-center justify-between gap-4 border-t border-bor pt-3`; label `text-text-sec capitalize`, value `text-text-pri` |
+| CTA              | `Button btnType="primary"` "Add to goal" |
+
+**Pattern notes:** Progress uses `ProgressBar`. Edit/Delete/Add-to-goal are callbacks up to `GoalsSection` (which owns the shared dialogs and delete confirm).
+
+### Goal / contribute dialogs
+
+File: `frontend/src/features/budget/components/GoalSetupDialog.tsx` + `ContributeDialog.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Dialog content   | `sm:max-w-md bg-bg`                     |
+| Header           | icon chip `p-2.5 rounded-md bg-sec/30 shrink-0` + `h2 capitalize` + `text-xs text-text-mute` |
+| Field label      | `text-xs capitalize`                    |
+| Amount input     | `border border-neutral-300 rounded-md` + `text-xs p-2.5` |
+| Paired fields    | `grid grid-cols-2 gap-4` (target amount + date) |
+| Hint text        | `text-xs text-text-mute`                |
+| Stat strip       | `grid grid-cols-3 gap-4 border border-bor rounded-md p-3` (Saved / To go / Balance) |
+
+**Pattern notes:** Both seed on open via a `seeded` flag. `GoalSetupDialog` recomputes the suggested contribution live (`roundUpToNearest(remaining/monthsLeft, 1000)`, monthsLeft calendar-based min 1); monthly-contribution field appears only in edit mode (backend computes it on create). `ContributeDialog` caps the amount at `useGetBalance` balance and notes the contribution is logged as an expense.
+
+### Move money dialog
+
+File: `frontend/src/features/budget/components/MoveMoneyDialog.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Dialog content   | `sm:max-w-md bg-bg`                     |
+| Select           | `Combobox` content `bg-bg text-text-pri border border-bor`, item hover `hover:!bg-pri`, source items show available `text-xs text-text-mute` amount via `ml-auto` |
+| Amount input     | `border border-neutral-300 rounded-md` + `text-xs p-2.5` |
+
+**Pattern notes:** Client-validates amount ≤ source remaining before calling the move endpoint. On success closes and shows the success `OutcomeModal`.
+
+### Budget skeleton + onboarding card
+
+File: `frontend/src/features/budget/components/BudgetSkeleton.tsx` + `OnboardingCard.tsx`
+Last updated: 2026-08-15
+
+| Property         | Class                                   |
+| ---------------- | --------------------------------------- |
+| Skeleton         | `Skeleton` (`bg-neutral-200 animate-pulse rounded-md`) mirroring real layout: overview card, health card, 2 group cards with 3 rows each |
+| Onboarding       | `EmptyState` inside `border border-bor rounded-xl`, `Icon={Wallet}`, CTA `Button btnType="primary" w-fit px-6` |
+
+**Pattern notes:** Skeleton reproduces the exact card/row shapes of the loaded page (`h-6 w-32` headings, `h-2 w-full` progress, `size-9 rounded-md` icon chips, `h-4 w-24` rows). Onboarding shows when `GET /budget` returns `{ budget: null }`.
+

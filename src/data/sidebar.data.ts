@@ -3,6 +3,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { TfiLoop } from "react-icons/tfi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { MdOutlineSavings } from "react-icons/md";
+import { FaChartPie, FaPiggyBank } from "react-icons/fa6";
 
 export const sidebarData = [
   {
@@ -15,6 +16,18 @@ export const sidebarData = [
     name: "Transactions",
     link: "/transactions",
     Icon: GiReceiveMoney,
+    isLocked: false,
+  },
+  {
+    name: "Analytics",
+    link: "/analytics",
+    Icon: FaChartPie,
+    isLocked: false,
+  },
+  {
+    name: "Budget",
+    link: "/budget",
+    Icon: FaPiggyBank,
     isLocked: false,
   },
   {

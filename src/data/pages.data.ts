@@ -11,6 +11,8 @@ import Account from "@/pages/Account";
 import Transactions from "@/pages/Transactions";
 import TransactionSummary from "@/pages/TransactionSummary";
 import Savings from "@/pages/Savings";
+import Analytics from "@/pages/Analytics";
+import Budget from "@/pages/Budget";
 
 export const pages = [
   {
@@ -48,6 +50,14 @@ export const pages = [
   {
     path: "/transactions/:id",
     Component: TransactionSummary,
+  },
+  {
+    path: "/analytics",
+    Component: Analytics,
+  },
+  {
+    path: "/budget",
+    Component: Budget,
   },
   {
     path: "/savings",

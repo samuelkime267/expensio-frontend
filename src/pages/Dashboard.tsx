@@ -1,7 +1,10 @@
 import { Button, Cashflow, QuickLog, StatusCard } from "@/components";
 import { NavLink } from "react-router-dom";
 import { useGetTransactions } from "@/features/transaction/utils";
-import { TransactionTable } from "@/features/transaction/components";
+import {
+  TransactionList,
+  TransactionTable,
+} from "@/features/transaction/components";
 
 export default function Dashboard() {
   const {
@@ -24,22 +27,35 @@ export default function Dashboard() {
         <StatusCard type="expense" />
         <Cashflow />
         <div className="md:col-span-2 lg:col-span-4 border border-bor rounded-xl p-4 flex flex-col gap-6">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-pri text-2xl font-medium capitalize">
-              Recent Transactions
-            </h1>
+          {!isPending && (
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-pri text-2xl font-medium capitalize">
+                Recent Transactions
+              </h1>
 
-            <NavLink to="/transactions">
-              <Button
-                btnType="accent"
-                className="flex items-center justify-center gap-2 text-xs text-nowrap"
-              >
-                See all
-              </Button>
-            </NavLink>
+              <NavLink to="/transactions">
+                <Button
+                  btnType="accent"
+                  className="flex items-center justify-center gap-2 text-xs text-nowrap"
+                >
+                  See all
+                </Button>
+              </NavLink>
+            </div>
+          )}
+
+          <div className="hidden md:block">
+            <TransactionTable
+              data={data}
+              isLoading={isPending}
+              isError={isError}
+              errorMessage={error?.message}
+              onRetry={() => refetch()}
+              isRetrying={isFetching}
+            />
           </div>
 
-          <TransactionTable
+          <TransactionList
             data={data}
             isLoading={isPending}
             isError={isError}

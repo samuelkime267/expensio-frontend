@@ -24,7 +24,7 @@ type BarChartProps = {
     datasets: {
       label: string;
       data: number[];
-      backgroundColor: string;
+      backgroundColor: string | string[];
       borderRadius: number;
       borderSkipped?: boolean;
     }[];
