@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { formatDateTime, getCurrentLocalDateTime } from "@/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import useLogTransaction from "../utils/useLogTransaction";
+import { ListOrderedIcon, PenLineIcon, TrashIcon } from "lucide-react";
+import PriceBreakdown from "./PriceBreakdown";
 
 type LogTransactionProps = {
   type: "Income" | "Expense";
@@ -33,6 +35,10 @@ export default function LogTransaction({
     setIsCategoryModalOpen,
     isBreakDownModalOpen,
     setIsBreakDownModalOpen,
+    isBreakDownMode,
+    breakdowns,
+    saveBreakdowns,
+    clearBreakdowns,
     isLoading,
     isError,
     amount,
@@ -97,19 +103,51 @@ export default function LogTransaction({
               placeholder="Enter Amount"
               value={amount}
               onChange={handleAmountChange}
+              readOnly={isBreakDownMode}
               error={errors.amount?.message}
               className="border-0"
               inputClassName="text-center text-3xl p-0 font-medium"
               containerClassName="border-y border-dashed border-black/20 py-4"
             />
-            <Button
-              btnType="accent"
-              className={cn("text-xs text-nowrap hidden!")}
-              type="button"
-              onClick={() => setIsBreakDownModalOpen(true)}
-            >
-              Use Breakdown
-            </Button>
+
+            {isBreakDownMode ? (
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <p className="text-xs text-text-mute">
+                  {breakdowns.length}{" "}
+                  {breakdowns.length === 1 ? "item" : "items"} · {amount}
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    btnType="accent"
+                    className="text-xs text-nowrap"
+                    type="button"
+                    onClick={() => setIsBreakDownModalOpen(true)}
+                  >
+                    <PenLineIcon className="size-3" />
+                    Edit
+                  </Button>
+                  <Button
+                    btnType="accent"
+                    className="text-xs text-nowrap text-err"
+                    type="button"
+                    onClick={clearBreakdowns}
+                  >
+                    <TrashIcon className="size-3" />
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                btnType="accent"
+                className={cn("text-xs text-nowrap")}
+                type="button"
+                onClick={() => setIsBreakDownModalOpen(true)}
+              >
+                <ListOrderedIcon className="size-3" />
+                Use Breakdown
+              </Button>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -240,30 +278,12 @@ export default function LogTransaction({
         </DialogContent>
       </Dialog>
 
-      <Dialog
+      <PriceBreakdown
         open={isBreakDownModalOpen}
         onOpenChange={setIsBreakDownModalOpen}
-      >
-        <DialogContent className="sm:max-w-xl bg-bg overflow-y-auto p-2 max-h-[calc(100dvh-6rem)]">
-          <div
-            className={cn(
-              "w-full relative p-2 gap-6 h-full flex flex-col items-start justify-start",
-              className,
-            )}
-          >
-            <div className="w-full flex items-center justify-between gap-4">
-              <h2 className="">Price Breakdown</h2>
-            </div>
-
-            <div>
-              <div>
-                <Input type="name" placeholder="Item Name" />
-                <Input type="number" placeholder="Amount" />
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+        initialItems={breakdowns}
+        onSave={saveBreakdowns}
+      />
     </div>
   );
 }

@@ -1,18 +1,54 @@
 import { Button } from "@/components";
-import { TransactionTable } from "@/features/transaction/components";
+import {
+  TransactionFilterDialog,
+  TransactionList,
+  TransactionTable,
+} from "@/features/transaction/components";
 import { useGetTransactions } from "@/features/transaction/utils";
+import type { TransactionQueries } from "@/features/transaction/services";
 import { cn } from "@/lib/utils";
 import { FilterIcon } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function Transactions() {
   const [curPage, setCurPage] = useState(1);
   const [isIncome, setIsIncome] = useState<boolean | null>(null);
-  const { data } = useGetTransactions({
+  const [filters, setFilters] = useState<TransactionQueries>({});
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useGetTransactions({
     page: curPage,
     ...(isIncome !== null && { type: isIncome ? "Income" : "Expense" }),
+    ...(filters?.search && { search: filters.search }),
+    ...(filters?.category && { category: filters.category }),
+    ...(filters?.startDate && { startDate: filters.startDate }),
+    ...(filters?.endDate && { endDate: filters.endDate }),
+    ...(filters?.minAmount && { minAmount: filters.minAmount }),
+    ...(filters?.maxAmount && { maxAmount: filters.maxAmount }),
+    ...(filters?.sort && { sort: filters.sort }),
   });
   const { pagination } = data || {};
+
+  const activeFilterCount = useMemo(() => {
+    if (!filters) return 0;
+    let count = 0;
+    if (filters.search) count++;
+    if (filters.category) count++;
+    if (filters.startDate || filters.endDate) count++;
+    if (filters.minAmount || filters.maxAmount) count++;
+    if (filters.sort && filters.sort !== "desc") count++;
+    return count;
+  }, [filters]);
+
+  const hasTransactions = Boolean(data && data.transactions.length > 0);
+  const showPagination = isError || hasTransactions;
 
   const incomeClick = () => {
     setCurPage(1);
@@ -31,6 +67,11 @@ export default function Transactions() {
       if (val === null) return false;
       return null;
     });
+  };
+
+  const applyFilters = (newFilters: TransactionQueries) => {
+    setCurPage(1);
+    setFilters(newFilters);
   };
 
   return (
@@ -64,38 +105,78 @@ export default function Transactions() {
             </div>
             <Button
               btnType="accent"
-              className="flex items-center justify-center gap-2 text-xs "
+              className={cn(
+                "flex items-center justify-center gap-2 text-xs ",
+                {
+                  "border-pri text-pri": activeFilterCount > 0,
+                },
+              )}
+              onClick={() => setIsFilterOpen(true)}
             >
               <FilterIcon className="size-3" />
               Filter
+              {activeFilterCount > 0 && (
+                <span className="bg-pri text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  {activeFilterCount}
+                </span>
+              )}
             </Button>
           </div>
         </div>
 
-        <TransactionTable data={data} />
-
-        <div className="flex max-lg:flex-col gap-4 lg:items-center lg:justify-between p-4">
-          <p>
-            Page {pagination?.currentPage} of {pagination?.maxPage}
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Button
-              btnType="secondary"
-              disabled={!pagination?.prevPage}
-              onClick={() => setCurPage((s) => s - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              disabled={!pagination?.nextPage}
-              btnType="primary"
-              onClick={() => setCurPage((s) => s + 1)}
-            >
-              Next
-            </Button>
-          </div>
+        <div className="hidden md:block">
+          <TransactionTable
+            data={data}
+            isLoading={isPending}
+            isError={isError}
+            errorMessage={error?.message}
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+          />
         </div>
+
+        <TransactionList
+          data={data}
+          isLoading={isPending}
+          isError={isError}
+          errorMessage={error?.message}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+
+        {showPagination && (
+          <div className="flex max-lg:flex-col gap-4 lg:items-center lg:justify-between p-4">
+            <p>
+              {isError
+                ? `Page ${curPage}`
+                : `Page ${pagination?.currentPage ?? curPage} of ${pagination?.maxPage ?? "..."}`}
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                btnType="secondary"
+                disabled={isError || isPending || !pagination?.prevPage}
+                onClick={() => setCurPage((s) => s - 1)}
+              >
+                Previous
+              </Button>
+              <Button
+                disabled={isError || isPending || !pagination?.nextPage}
+                btnType="primary"
+                onClick={() => setCurPage((s) => s + 1)}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
+
+      <TransactionFilterDialog
+        open={isFilterOpen}
+        onOpenChange={setIsFilterOpen}
+        onApply={applyFilters}
+        initialFilters={filters}
+      />
     </div>
   );
 }

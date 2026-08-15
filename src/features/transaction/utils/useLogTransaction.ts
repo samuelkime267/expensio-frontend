@@ -5,6 +5,7 @@ import { useGetCategories } from "@/features/category/utils";
 import { useCreateTransaction } from "../utils/useCreateTransaction";
 import {
   createTransactionSchema,
+  type BreakdownType,
   type CreateTransactionSchemaType,
   type TransactionSchemaType,
 } from "../schemas";
@@ -42,6 +43,8 @@ export default function useLogTransaction({
   const [amount, setAmount] = useState("");
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isBreakDownModalOpen, setIsBreakDownModalOpen] = useState(false);
+  const [isBreakDownMode, setIsBreakDownMode] = useState(false);
+  const [breakdowns, setBreakdowns] = useState<BreakdownType[]>([]);
   const { data, isLoading, isError } = useGetCategories(type === "Income");
   const [btnClicked, setBtnClicked] = useState(false);
 
@@ -77,13 +80,30 @@ export default function useLogTransaction({
 
   const overallLoading = isPending || isUpdatePending;
 
+  const saveBreakdowns = (items: BreakdownType[]) => {
+    const total = items.reduce((sum, item) => sum + item.amount, 0);
+    const { valueStr, value } = formatAmount(total);
+
+    setBreakdowns(items);
+    setAmount(valueStr);
+    setValue("amount", value);
+    setIsBreakDownMode(true);
+    setIsBreakDownModalOpen(false);
+  };
+
+  const clearBreakdowns = () => {
+    setBreakdowns([]);
+    setIsBreakDownMode(false);
+  };
+
   const submit = handleSubmit((bodyData: CreateTransactionSchemaType) => {
+    const payload = { ...bodyData, breakdowns };
     if (!transaction) {
-      mutate(bodyData);
+      mutate(payload);
       return;
     }
 
-    updateMutate({ transaction: bodyData, id: transaction._id });
+    updateMutate({ transaction: payload, id: transaction._id });
   });
 
   ///////////////////////////////////////////////////////
@@ -119,6 +139,9 @@ export default function useLogTransaction({
       setValue("category", transaction.category.value);
       setValue("description", transaction.description);
       setValue("type", transaction.type);
+      const items = transaction.breakdowns || [];
+      setBreakdowns(items);
+      setIsBreakDownMode(items.length > 0);
     }
   }, [transaction, setValue]);
 
@@ -139,6 +162,10 @@ export default function useLogTransaction({
     setIsCategoryModalOpen,
     isBreakDownModalOpen,
     setIsBreakDownModalOpen,
+    isBreakDownMode,
+    breakdowns,
+    saveBreakdowns,
+    clearBreakdowns,
     data,
     isLoading,
     isError,

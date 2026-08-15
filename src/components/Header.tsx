@@ -3,6 +3,7 @@ import { useAuth } from "@/stores";
 import Button from "./Button";
 import { AUTH_PREFIX, DEFAULT_AUTH_REDIRECT_ROUTE } from "@/data/routes.data";
 import Notification from "./Notification";
+import QuickLogButton from "./QuickLogButton";
 import { UserHeaderDropdown } from "@/features/user/components";
 import { IoMenu } from "react-icons/io5";
 import { Logo } from "./icons";
@@ -33,6 +34,7 @@ export default function Header({ setIsSidebarOpen }: HeaderProps) {
         </div>
 
         <div className="flex items-center justify-center gap-4">
+          {isLoggedIn && <QuickLogButton />}
           <Notification />
 
           {isLoggedIn ? (

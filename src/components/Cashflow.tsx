@@ -1,4 +1,4 @@
-import { Button, BarChart } from "@/components";
+import { Button, BarChart, ErrorState, Skeleton } from "@/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,8 @@ export default function Cashflow() {
   const durationLabel =
     durations.find(({ value }) => value === duration)?.label || "";
 
-  const { data } = useGetCashflow(duration);
+  const { data, isPending, isError, error, refetch, isFetching } =
+    useGetCashflow(duration);
   const { labels, expense, income } = data || {};
 
   const chartData = {
@@ -36,6 +37,32 @@ export default function Cashflow() {
       },
     ],
   };
+
+  if (isError)
+    return (
+      <div className="md:col-span-2 lg:col-span-4 border border-bor rounded-xl p-4 flex flex-col">
+        <ErrorState
+          message={error?.message}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </div>
+    );
+
+  if (isPending)
+    return (
+      <div className="md:col-span-2 lg:col-span-4 border border-bor rounded-xl p-4 flex flex-col gap-6">
+        <div className="flex items-center justify-between gap-4">
+          <Skeleton className="h-6 w-28" />
+          <Skeleton className="h-8 w-24 rounded-full" />
+        </div>
+        <Skeleton className="w-full aspect-[2/1] rounded-lg" />
+        <div className="flex items-center justify-end gap-4">
+          <Skeleton className="h-4 w-16 rounded-full" />
+          <Skeleton className="h-4 w-20 rounded-full" />
+        </div>
+      </div>
+    );
 
   return (
     <div className="md:col-span-2 lg:col-span-4 border border-bor rounded-xl p-4 flex flex-col gap-6">

@@ -31,6 +31,11 @@ export type TransactionQueries =
       type?: TransactionType;
       startDate?: number;
       endDate?: number;
+      search?: string;
+      category?: string;
+      minAmount?: number;
+      maxAmount?: number;
+      sort?: "asc" | "desc";
     }
   | undefined;
 

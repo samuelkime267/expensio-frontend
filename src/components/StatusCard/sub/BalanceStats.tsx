@@ -1,10 +1,26 @@
 import { TbMoneybag } from "react-icons/tb";
 import useGetBalance from "@/features/user/utils/useGetBalance";
 import { formatCurrency } from "@/utils";
+import { ErrorState } from "@/components";
+import StatusCardSkeleton from "../skeleton";
 
 export default function BalanceStats() {
-  const { data } = useGetBalance();
+  const { data, isPending, isError, error, refetch, isFetching } =
+    useGetBalance();
   const amount = data?.balance || 0;
+
+  if (isError)
+    return (
+      <div className="border border-bor rounded-xl p-4 flex flex-col">
+        <ErrorState
+          message={error?.message}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </div>
+    );
+
+  if (isPending) return <StatusCardSkeleton />;
 
   return (
     <div className="border border-bor rounded-xl p-4 flex flex-col gap-8">

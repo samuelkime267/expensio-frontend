@@ -18,18 +18,20 @@ import { useState } from "react";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { useDeleteTransaction } from "@/features/transaction/utils";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type TransactionTableProps = {
   data: TransactionSchemaType;
 };
 
 export default function TransactionTableRow({ data }: TransactionTableProps) {
+  const navigate = useNavigate();
   const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [isDeleteTransactionModalOpen, setIsDeleteTransactionModalOpen] =
     useState(false);
 
-  const { name, category, amount, date, type, _id } = data;
+  const { name, category, amount, date, type, _id, breakdowns } = data;
   const { mutate, isPending } = useDeleteTransaction({
     onSuccess: () => {
       setIsDeleteTransactionModalOpen(false);
@@ -38,9 +40,19 @@ export default function TransactionTableRow({ data }: TransactionTableProps) {
   });
 
   return (
-    <TableRow className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor">
+    <TableRow
+      className="hover:bg-[#ecf5ea]/50 transition-color duration-300 !border-b !border-b-bor cursor-pointer"
+      onClick={() => navigate(`/transactions/${_id}`)}
+    >
       <TableCell className="font-medium p-4">{name}</TableCell>
-      <TableCell className="p-4">{category.name}</TableCell>
+      <TableCell className="p-4">
+        <p>{category.name}</p>
+        {breakdowns.length > 0 && (
+          <p className="text-[10px] text-text-mute">
+            {breakdowns.length} {breakdowns.length === 1 ? "item" : "items"}
+          </p>
+        )}
+      </TableCell>
       <TableCell
         className={cn("p-4", {
           "text-success": type === "Income",
@@ -54,7 +66,10 @@ export default function TransactionTableRow({ data }: TransactionTableProps) {
         <p>{formatDateTime(date).date}</p>
         <p className="text-[10px]">{formatDateTime(date).time}</p>
       </TableCell>
-      <TableCell className="p-4 space-y-0.5 h-full flex items-center justify-center">
+      <TableCell
+        className="p-4 space-y-0.5 h-full flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="flex items-center justify-center gap-2 h-full p-2">

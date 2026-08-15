@@ -2,6 +2,13 @@ import { z } from "zod";
 
 const transactionType = z.enum(["Income", "Expense"]);
 
+export const breakdownSchema = z.object({
+  name: z.string("Name is required").min(1, "Name is required"),
+  amount: z
+    .number("Amount is required")
+    .positive("Amount must be greater than zero"),
+});
+
 export const createTransactionSchema = z.object({
   name: z.string("Name should be a string").min(2, "Name is required"),
   amount: z.coerce
@@ -16,9 +23,12 @@ export const createTransactionSchema = z.object({
   }),
   category: z.string("Category is required").min(3, "Category is required"),
   description: z.string().optional(),
+  breakdowns: z.array(breakdownSchema).optional(),
   type: transactionType,
 });
 
 export type CreateTransactionSchemaType = z.infer<
   typeof createTransactionSchema
 >;
+
+export type BreakdownType = z.infer<typeof breakdownSchema>;

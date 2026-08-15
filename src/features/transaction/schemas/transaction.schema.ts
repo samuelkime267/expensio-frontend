@@ -1,5 +1,6 @@
 import { ObjectIdSchema } from "@/schemas/objectId.schema";
 import { z } from "zod";
+import { breakdownSchema } from "./createTransaction.schema";
 
 export const transactionTypeSchema = z.enum(["Income", "Expense"]);
 
@@ -18,6 +19,7 @@ export const transactionSchema = z.object({
     value: z.string(),
   }),
   description: z.string().optional(),
+  breakdowns: z.array(breakdownSchema).default([]),
 });
 
 export const transactionsSchema = z.array(transactionSchema);

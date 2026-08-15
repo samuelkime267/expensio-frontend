@@ -1,6 +1,6 @@
 import { GiReceiveMoney } from "react-icons/gi";
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
-import { Button } from "@/components";
+import { Button, ErrorState } from "@/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +13,15 @@ import { durations, type duration } from "@/data/durations.data";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
 import { useGetTotal } from "@/features/transaction/utils";
+import StatusCardSkeleton from "../skeleton";
 
 export default function IncomeStats() {
   const [duration, setDuration] = useState<duration>("week");
   const durationLabel =
     durations.find(({ value }) => value === duration)?.label || "";
 
-  const { data } = useGetTotal(duration);
+  const { data, isPending, isError, error, refetch, isFetching } =
+    useGetTotal(duration);
   const { income } = data || {};
   const { percentageChange, total } = income || {};
 
@@ -31,6 +33,19 @@ export default function IncomeStats() {
         : percentageChange > 0;
 
   const amount = total || 0;
+
+  if (isError)
+    return (
+      <div className="border border-bor rounded-xl p-4 flex flex-col">
+        <ErrorState
+          message={error?.message}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </div>
+    );
+
+  if (isPending) return <StatusCardSkeleton />;
 
   return (
     <div className="border border-bor rounded-xl p-4 flex flex-col gap-8">

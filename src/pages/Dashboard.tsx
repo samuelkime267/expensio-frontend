@@ -4,7 +4,14 @@ import { useGetTransactions } from "@/features/transaction/utils";
 import { TransactionTable } from "@/features/transaction/components";
 
 export default function Dashboard() {
-  const { data } = useGetTransactions({
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useGetTransactions({
     count: 10,
   });
 
@@ -32,7 +39,14 @@ export default function Dashboard() {
             </NavLink>
           </div>
 
-          <TransactionTable data={data} />
+          <TransactionTable
+            data={data}
+            isLoading={isPending}
+            isError={isError}
+            errorMessage={error?.message}
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+          />
         </div>
       </div>
     </main>

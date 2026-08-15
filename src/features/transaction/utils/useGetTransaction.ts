@@ -8,6 +8,6 @@ export function useGetTransaction(transactionId: string) {
   return useQuery({
     queryFn: () => getTransaction(transactionId),
     queryKey: ["transaction", transactionId],
-    enabled: !!id,
+    enabled: !!transactionId && !!id,
   });
 }

@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard";
 import Subscriptions from "@/pages/Subscriptions";
 import Account from "@/pages/Account";
 import Transactions from "@/pages/Transactions";
+import TransactionSummary from "@/pages/TransactionSummary";
 import Savings from "@/pages/Savings";
 
 export const pages = [
@@ -43,6 +44,10 @@ export const pages = [
   {
     path: "/transactions",
     Component: Transactions,
+  },
+  {
+    path: "/transactions/:id",
+    Component: TransactionSummary,
   },
   {
     path: "/savings",
